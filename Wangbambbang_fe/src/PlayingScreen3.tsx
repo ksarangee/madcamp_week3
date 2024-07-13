@@ -14,7 +14,7 @@ import { RootStackParamList } from '../App';
 import LottieView from 'lottie-react-native';
 
 type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing3'>;
-type PlayingScreenRouteProp = RouteProp<RootStackParamList, 'Playing4'>;
+type PlayingScreenRouteProp = RouteProp<RootStackParamList, 'Playing3'>;
 
 type Props = {
     navigation: PlayingScreenNavigationProp;
