@@ -33,12 +33,12 @@ const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
       <View style={styles.iconPlaceholder}></View>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Playing')}
+        onPress={() => navigation.navigate('Playing1')}
         style={styles.playButton}>
         <Text style={styles.playButtonText}>Play!</Text>
         <Image
           style={styles.playIcon}
-          source={require('../assets/image/playbutton.png')} // 아이콘 이미지 파일 경로
+          source={require('../assets/image/play.png')} // 아이콘 이미지 파일 경로
         />
       </TouchableOpacity>
     </View>
