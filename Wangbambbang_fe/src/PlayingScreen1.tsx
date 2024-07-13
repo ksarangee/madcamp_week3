@@ -6,11 +6,14 @@ import {
     StyleSheet,
     TouchableOpacity,
     Animated,
-    Alert
+    Alert,
+    PermissionsAndroid,
+    Platform
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import LottieView from 'lottie-react-native';
+import { AudioUtils, AudioRecorder } from 'react-native-audio';
 
 type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing1'>;
 
@@ -51,6 +54,33 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation }) => {
         setScripts(initialScripts);
     }, []);
 
+    useEffect(() => {
+        requestAudioPermission();
+    }, []);
+
+    const requestAudioPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                    {
+                        title: 'Audio Permission',
+                        message: 'App needs access to your microphone to record audio.',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    },
+                );
+                console.log("권한: ",granted)
+                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                    Alert.alert('Permission denied', 'You need to give audio permission to use this feature.');
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+    };
+
     const getDuration = (script: string) => {
         if (shortScript.includes(script)) {
             return 1500; // 1.5초
@@ -64,8 +94,8 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation }) => {
             toValue: 1,
             duration: duration,
             useNativeDriver: false,
-        }).start(({ finished }) => {
-            if (finished) {
+        }).start(async ({ finished }) => {
+            if (finished) {              
                 console.log(scripts);
                 navigation.navigate('Playing2', { scripts: scripts.slice(1) });
             }

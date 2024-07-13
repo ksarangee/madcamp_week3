@@ -13,8 +13,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import LottieView from 'lottie-react-native';
 
-type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing5'>;
-type PlayingScreenRouteProp = RouteProp<RootStackParamList, 'Playing5'>;
+type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing6'>;
+type PlayingScreenRouteProp = RouteProp<RootStackParamList, 'Playing6'>;
 
 type Props = {
     navigation: PlayingScreenNavigationProp;
@@ -88,6 +88,18 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({ navigation, route }) =
             </TouchableOpacity>
 
             <View style={styles.checkContainer}>
+                <View style={styles.checkCircle}>
+                    <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
+                </View>
+                <View style={styles.checkCircle}>
+                    <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
+                </View>
+                <View style={styles.checkCircle}>
+                    <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
+                </View>
+                <View style={styles.checkCircle}>
+                    <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
+                </View>
                 <View style={styles.checkCircle}>
                     <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
                 </View>

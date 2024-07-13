@@ -11,6 +11,7 @@ import PlayingScreen6 from './src/PlayingScreen6';
 import ScoreScreen from './src/ScoreScreen';
 import RankingScreen from './src/RankingScreen';
 import {RankingProvider} from './src/RankingContext';
+import AudioTestScreen from './src/audioTest';
 
 export type RootStackParamList = {
   Main: undefined;
@@ -27,6 +28,7 @@ export type RootStackParamList = {
   Playing5: { scripts: string[] };
   Playing6: { scripts: string[] };
   Score: undefined; 
+  AudioTest: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -35,7 +37,12 @@ function App(): React.JSX.Element {
   return (
     <RankingProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Main">
+        <Stack.Navigator initialRouteName="AudioTest">
+        <Stack.Screen
+            name="AudioTest"
+            component={AudioTestScreen}
+            options={{headerShown: false}}
+          />
           <Stack.Screen
             name="Main"
             component={MainScreen}

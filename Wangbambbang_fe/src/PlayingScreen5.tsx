@@ -92,6 +92,15 @@ const PlayingScreen5: React.FunctionComponent<Props> = ({ navigation, route }) =
                     <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
                 </View>
                 <View style={styles.checkCircle}>
+                    <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
+                </View>
+                <View style={styles.checkCircle}>
+                    <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
+                </View>
+                <View style={styles.checkCircle}>
+                    <Image style={styles.checkIcon} source={require('../assets/image/check.png')} />
+                </View>
+                <View style={styles.checkCircle}>
                     <View style={styles.currentQuestionIndicator} />
                 </View>
                 {[...Array(1)].map((_, index) => (
