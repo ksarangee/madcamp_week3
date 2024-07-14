@@ -19,31 +19,32 @@ export class ScriptService {
     const count = await this.scriptModel.countDocuments();
     if (count === 0) {
       await this.scriptModel.insertMany([
-        //쉬운, 짧은 스크립트
-        { content: '경찰청 쇠창살', level: ScriptLevel.Easy },
-        { content: '홍천군청', level: ScriptLevel.Easy },
-        { content: '챠프포프프', level: ScriptLevel.Easy },
-        { content: '새우로얄뉴로얄', level: ScriptLevel.Easy },
+        //쉬운 스크립트
+        { content: '맑다', level: ScriptLevel.Easy },
+        { content: '넓다', level: ScriptLevel.Easy },
+        { content: '끝을', level: ScriptLevel.Easy },
+        { content: '볶음밥', level: ScriptLevel.Easy },
+        { content: '일요일', level: ScriptLevel.Easy },
+        //어려운 대본들
         {
-          content: '시골 찹쌀 챗찹쌀 도시 찹쌀 촌찹쌀',
-          level: ScriptLevel.Easy,
-        },
-        //긴, 어려운 대본들
-        {
-          content: '저기 가는 저 상장사가 새 상 상장사냐 헌 상 상장사냐',
+          content: '담임',
           level: ScriptLevel.Hard,
         },
         {
-          content: '칠월칠일은 평창친구 친정 칠순 잔칫날',
+          content: '닭이',
           level: ScriptLevel.Hard,
         },
-        { content: '신진 샹숑가수의 신춘 샹숑쇼우', level: ScriptLevel.Hard },
+        { content: '읊다', level: ScriptLevel.Hard },
         {
-          content: '서울특별시 특허허가과 허가과장 허과장',
+          content: '여덟은',
           level: ScriptLevel.Hard,
         },
         {
-          content: '청단풍잎 홍단풍잎 흑단풍잎 백단풍잎',
+          content: '흙에서',
+          level: ScriptLevel.Hard,
+        },
+        {
+          content: '무릎에',
           level: ScriptLevel.Hard,
         },
       ]);
