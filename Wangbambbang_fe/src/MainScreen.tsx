@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Alert,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../App';
@@ -17,6 +20,34 @@ type Props = {
 };
 
 const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
+  const [hasPermission, setHasPermission] = useState(false);
+  useEffect(() => {
+    const requestAudioPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                    {
+                        title: 'Audio Permission',
+                        message: 'App needs access to your microphone to record audio.',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    },
+                );
+                setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
+                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                    Alert.alert('Permission denied', 'You need to give audio permission to use this feature.');
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+    };
+
+    requestAudioPermission();
+}, []);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -33,7 +64,7 @@ const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
       <View style={styles.iconPlaceholder}></View>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Playing1')}
+        onPress={() => navigation.navigate('Playing1', {hasPermission})}
         style={styles.playButton}>
         <Text style={styles.playButtonText}>Play!</Text>
         <Image

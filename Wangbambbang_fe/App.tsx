@@ -21,7 +21,7 @@ export type RootStackParamList = {
         score?: number;
       }
     | undefined;
-  Playing1: undefined;
+  Playing1: {hasPermission : boolean};
   Playing2: { scripts: string[] };
   Playing3: { scripts: string[] };
   Playing4: { scripts: string[] };
@@ -37,7 +37,7 @@ function App(): React.JSX.Element {
   return (
     <RankingProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="AudioTest">
+        <Stack.Navigator initialRouteName="Main">
         <Stack.Screen
             name="AudioTest"
             component={AudioTestScreen}

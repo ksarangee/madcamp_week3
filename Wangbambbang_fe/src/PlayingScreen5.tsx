@@ -12,6 +12,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import LottieView from 'lottie-react-native';
+import { AudioUtils, AudioRecorder } from 'react-native-audio';
 
 type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing5'>;
 type PlayingScreenRouteProp = RouteProp<RootStackParamList, 'Playing5'>;
@@ -24,6 +25,10 @@ type Props = {
 const PlayingScreen5: React.FunctionComponent<Props> = ({ navigation, route }) => {
     const [progress, setProgress] = useState(new Animated.Value(0));
     const { scripts } = route.params;
+    const [recording, setRecording] = useState(false);
+    const [recordingFinished, setRecordingFinished] = useState(false);
+    const [audioPath, setAudioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
+    const [timerFinished, setTimerFinished] = useState(false);
 
     const getDuration = (script: string) => {
         if (script.includes("short")) {
@@ -34,22 +39,89 @@ const PlayingScreen5: React.FunctionComponent<Props> = ({ navigation, route }) =
     };
 
     const startTimer = (duration: number) => {
+        setTimerFinished(false);
         Animated.timing(progress, {
             toValue: 1,
             duration: duration,
             useNativeDriver: false,
-        }).start(({ finished }) => {
-            if (finished) {
+        }).start(async ({ finished }) => {
+            if (finished) {              
+                setTimerFinished(true);
                 navigation.navigate('Playing6', { scripts: scripts.slice(1) });
+                // navigation.navigate('Main');
             }
         });
     };
 
     useEffect(() => {
+            AudioRecorder.prepareRecordingAtPath(audioPath, {
+                SampleRate: 16000,
+                Channels: 1,
+                AudioQuality: "High",
+                AudioEncoding: "aac",
+                IncludeBase64: true, // Base64 인코딩을 포함하도록 설정
+            });
+
+            AudioRecorder.onProgress = (data) => {
+                // setCurrentTime(Math.floor(data.currentTime));
+            };
+
+            AudioRecorder.onFinished = (data) => {
+                setRecordingFinished(data.status === "OK");
+                console.log(`Finished recording2: ${data.audioFileURL}`);
+                // console.log(`Base64 Data: ${data.base64}`);
+            };
+
+    }, []);
+
+    useEffect(() => {
         if (scripts.length > 0) {
+            startRecording();
             startTimer(getDuration(scripts[0]));
         }
     }, [scripts]);
+
+    useEffect (() => {
+        console.log("recording start: ",recording)
+    }, [recording])
+
+    useEffect(() => {
+        console.log("recording Stop: ", recordingFinished)
+    }, [recordingFinished])
+
+    useEffect(() => {
+        if(recording) {
+            stopRecording();
+        }
+        
+    }, [timerFinished])
+
+    const startRecording = async () => {
+
+        if (recording) {
+            return Alert.alert('Recording', 'Already recording');
+        }
+
+        try {
+            await AudioRecorder.startRecording();
+            setRecording(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const stopRecording = async () => {
+        if (!recording) {
+            return Alert.alert('Recording', 'Not currently recording');
+        }
+
+        try {
+            await AudioRecorder.stopRecording();
+            setRecording(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleBackPress = () => {
         progress.stopAnimation();

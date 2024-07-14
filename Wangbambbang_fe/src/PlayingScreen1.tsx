@@ -14,27 +14,30 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import LottieView from 'lottie-react-native';
 import { AudioUtils, AudioRecorder } from 'react-native-audio';
+import { RouteProp } from '@react-navigation/native';
+import axios from 'axios';
 
 type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing1'>;
+type PlayingScreenRouterProp = RouteProp<RootStackParamList, 'Playing1'>;
 
 type Props = {
     navigation: PlayingScreenNavigationProp;
+    route: PlayingScreenRouterProp;
 };
 
 const shortScript = [
-    "경찰청 쇠창살",
-    "홍천군청",
-    "챠프포프프",
-    "새우로얄뉴로얄",
-    "시골 찹쌀 챗찹쌀 도시 찹쌀 촌찹쌀",
+    "맑음",
+    "엄마",
+    "아빠",
+    "동생",
+    "웃음",
 ];
 
 const longScript = [
-    "저기 가는 저 상장사가 새 상 상장사냐 헌 상 상장사냐",
-    "칠월칠일은 평창친구 친정 칠순 잔칫날",
-    "신진 샹숑가수의 신춘 샹숑쇼우",
-    "서울특별시 특허허가과 허가과장 허과장",
-    "청단풍잎 홍단풍잎 흑단풍잎 백단풍잎",
+    "안녕하세요 저는 이수민입니다",
+    "만나서 반가워요",
+    "막내가 제일 힘들어",
+    "저는 커서 선생님이 될거에요",
 ];
 
 const getRandomElements = (array: string[], count: number) => {
@@ -42,44 +45,18 @@ const getRandomElements = (array: string[], count: number) => {
     return shuffled.slice(0, count);
 };
 
-const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation }) => {
+const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation, route }) => {
     const [progress, setProgress] = useState(new Animated.Value(0));
     const [scripts, setScripts] = useState<string[]>([]);
+    // const [hasPermission, setHasPermission] = useState(false);
+    const {hasPermission} = route.params; 
+    const [recording, setRecording] = useState(false);
+    const [recordingFinished, setRecordingFinished] = useState(false);
+    const [audioPath, setAudioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
+    const [timerFinished, setTimerFinished] = useState(false);
+    const [base64String, setBase64String] = useState('');
+    
 
-    useEffect(() => {
-        const initialScripts = [
-            ...getRandomElements(shortScript, 3),
-            ...getRandomElements(longScript, 3)
-        ];
-        setScripts(initialScripts);
-    }, []);
-
-    useEffect(() => {
-        requestAudioPermission();
-    }, []);
-
-    const requestAudioPermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-                    {
-                        title: 'Audio Permission',
-                        message: 'App needs access to your microphone to record audio.',
-                        buttonNeutral: 'Ask Me Later',
-                        buttonNegative: 'Cancel',
-                        buttonPositive: 'OK',
-                    },
-                );
-                console.log("권한: ",granted)
-                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-                    Alert.alert('Permission denied', 'You need to give audio permission to use this feature.');
-                }
-            } catch (err) {
-                console.warn(err);
-            }
-        }
-    };
 
     const getDuration = (script: string) => {
         if (shortScript.includes(script)) {
@@ -89,24 +66,111 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation }) => {
         }
     };
 
+    useEffect(() => {
+        const initialScripts = [
+            ...getRandomElements(shortScript, 3),
+            ...getRandomElements(longScript, 3)
+        ];
+        setScripts(initialScripts);
+    }, []);
+
+
     const startTimer = (duration: number) => {
+        setTimerFinished(false);
         Animated.timing(progress, {
             toValue: 1,
             duration: duration,
             useNativeDriver: false,
         }).start(async ({ finished }) => {
             if (finished) {              
-                console.log(scripts);
+                setTimerFinished(true);
+                // evaluatePronunciation(base64String, scripts[0]);
                 navigation.navigate('Playing2', { scripts: scripts.slice(1) });
+                // navigation.navigate('Main');
             }
         });
     };
 
     useEffect(() => {
+        if (hasPermission) {
+            AudioRecorder.prepareRecordingAtPath(audioPath, {
+                SampleRate: 16000,
+                Channels: 1,
+                AudioQuality: "Low",
+                AudioEncoding: "aac",
+                IncludeBase64: true, // Base64 인코딩을 포함하도록 설정
+            });
+
+            AudioRecorder.onProgress = (data) => {
+                // setCurrentTime(Math.floor(data.currentTime));
+            };
+
+            AudioRecorder.onFinished = (data) => {
+                setRecordingFinished(data.status === "OK");
+                setBase64String(data.base64);
+                console.log(`Finished recording1: ${data.audioFileURL}`);
+                
+                // console.log(`Base64 Data: ${data.base64}`);
+            };
+        }
+    }, []);
+
+    useEffect (() => {
+        console.log("recording start: ",recording)
+    }, [recording])
+
+    useEffect(() => {
+        console.log("recording Stop: ", recordingFinished)
+    }, [recordingFinished])
+
+    useEffect(() => {
+        if(recording) {
+            stopRecording();
+        }
+        
+    }, [timerFinished])
+
+    useEffect(() => {
+        console.log("updated")
+    }, [base64String])
+
+    useEffect(() => {
+        console.log(hasPermission);
         if (scripts.length > 0) {
+            startRecording();
             startTimer(getDuration(scripts[0]));
         }
-    }, [scripts]);
+    }, [scripts, hasPermission]);
+
+    const startRecording = async () => {
+        if (!hasPermission) {
+            return Alert.alert('Permission', 'Microphone permission not granted');
+        }
+
+        if (recording) {
+            return Alert.alert('Recording', 'Already recording');
+        }
+
+        try {
+            await AudioRecorder.startRecording();
+            setRecording(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const stopRecording = async () => {
+        if (!recording) {
+            return Alert.alert('Recording', 'Not currently recording');
+        }
+
+        try {
+            await AudioRecorder.stopRecording();
+            setRecording(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleBackPress = () => {
         progress.stopAnimation();
@@ -127,6 +191,19 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation }) => {
             { cancelable: false }
         );
     };
+
+    // const evaluatePronunciation = async (audioData: string, script: string) => {
+    //     try {
+    //       const response = await axios.post('http://10.0.2.2:3000/users/evaluate-pronunciation', {
+    //         audioData,
+    //         script,
+    //       });
+      
+    //       console.log('Response:', response.data);
+    //     } catch (error: any) {
+    //         console.error('Error evaluating pronunciation:', error.response ? error.response.data : error.message);
+    //       }
+    //   };
 
     const animatedWidth = progress.interpolate({
         inputRange: [0, 1],
