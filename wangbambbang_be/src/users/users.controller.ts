@@ -1,13 +1,5 @@
 // users.controller.ts
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { EvaluatePronunciationDto } from './dto/EvaluatePronunciation.dto';
@@ -28,13 +20,11 @@ export class UsersController {
   }
 
   @Post('evaluate-pronunciation') // Evaluate pronunciation and return score
-  @UseInterceptors(FileInterceptor('audioFile'))
   async evaluatePronunciation(
-    @UploadedFile() audioFile: Express.Multer.File,
-    @Body() body: EvaluatePronunciationDto,
+    @Body() EvaluatePronunciationDto: EvaluatePronunciationDto,
   ) {
-    const { script } = body;
-    return this.usersService.evaluatePronunciation(audioFile.buffer, script);
+    const { audioData, script } = EvaluatePronunciationDto;
+    return this.usersService.evaluatePronunciation(audioData, script);
   }
 
   @Post('save-score') // Save user score after evaluation

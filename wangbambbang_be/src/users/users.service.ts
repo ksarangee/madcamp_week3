@@ -5,13 +5,6 @@ import { User } from 'src/schemas/User.schema';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { SaveScoreDto } from './dto/SaveScore.dto';
 import axios from 'axios';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as ffmpeg from 'fluent-ffmpeg';
-
-ffmpeg.setFfmpegPath(
-  'C:/Users/user/Downloads/ffmpeg-2024-07-10-git-1a86a7a48d-full_build/bin/ffmpeg.exe',
-);
 
 @Injectable()
 export class UsersService {
@@ -27,83 +20,58 @@ export class UsersService {
     return this.userModel.find();
   }
 
-  // Function to compress audio and convert to base64
-  private async compressAudio(
-    inputFilePath: string,
-    outputFilePath: string,
-  ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      ffmpeg(inputFilePath)
-        .output(outputFilePath)
-        .audioCodec('aac')
-        .audioBitrate('64k')
-        .on('end', () => {
-          console.log('Audio compression finished.');
-          resolve();
-        })
-        .on('error', (error) => {
-          console.error('Error compressing audio:', error);
-          reject(error);
-        })
-        .run();
-    });
-  }
-
-  private async encodeAudioToBase64(audioFilePath: string): Promise<string> {
-    const audioData = fs.readFileSync(audioFilePath);
-    return audioData.toString('base64');
-  }
-
-  async evaluatePronunciation(audioFile: Buffer, script: string) {
+  async evaluatePronunciation(audioData: string, script: string) {
     const accessKey = 'eb836333-d3fc-4fe1-ba18-d15dbf05d29d';
     const languageCode = 'korean';
-    const openApiURL = 'http://aiopen.etri.re.kr:8000/WiseASR/Pronunciation';
+    const openApiURL = 'http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor';
 
-    // Create a temporary file for the audio input
-    const tempInputPath = path.join(__dirname, 'temp_audio.aac');
-    const tempOutputPath = path.join(__dirname, 'compressed_audio.aac');
+    const requestJson = {
+      argument: {
+        language_code: languageCode,
+        script: script,
+        audio: audioData,
+      },
+    };
 
-    // Save the audio buffer to a temporary file
-    fs.writeFileSync(tempInputPath, audioFile);
+    const options = {
+      headers: { 'Content-Type': 'application/json', Authorization: accessKey },
+      timeout: 120000, // 타임아웃 설정 (2분)
+    };
+
+    console.log('Sending request to ETRI API:', openApiURL);
+    console.log('Request JSON:', JSON.stringify(requestJson));
+    console.log('Request Headers:', options);
 
     try {
-      // Compress the audio file
-      await this.compressAudio(tempInputPath, tempOutputPath);
+      const response = await this.retryRequest(
+        () => axios.post(openApiURL, requestJson, options),
+        3,
+      );
+      console.log('Response from ETRI API:', response.data);
 
-      // Convert the compressed audio file to base64
-      const audioData = await this.encodeAudioToBase64(tempOutputPath);
-
-      const requestJson = {
-        argument: {
-          language_code: languageCode,
-          script: script,
-          audio: audioData,
-        },
-      };
-
-      const options = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: accessKey,
-        },
-        timeout: 300000, // 타임아웃 설정
-      };
-
-      const response = await axios.post(openApiURL, requestJson, options);
-      const score = response.data.return_object.score; // Assuming the score is in this field
+      const score = response.data.return_object.score; // score is in this field
       return { score };
     } catch (error) {
       console.error('Error evaluating pronunciation:', error);
       throw error;
-    } finally {
-      // Clean up temporary files if they exist
-      if (fs.existsSync(tempInputPath)) {
-        fs.unlinkSync(tempInputPath);
-      }
-      if (fs.existsSync(tempOutputPath)) {
-        fs.unlinkSync(tempOutputPath);
+    }
+  }
+
+  // Retry logic for handling request failures
+  async retryRequest(fn, retries) {
+    let lastError;
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error;
+        console.error(`Retry ${i + 1} failed:`, error);
+        if (error.code !== 'ECONNABORTED') {
+          break; // 다른 오류 코드가 발생하면 재시도 중단
+        }
       }
     }
+    throw lastError;
   }
 
   async saveScore(saveScoreDto: SaveScoreDto) {
