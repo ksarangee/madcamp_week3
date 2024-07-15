@@ -47,6 +47,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 }) => {
   const [progress, setProgress] = useState(new Animated.Value(0));
   const [scripts, setScripts] = useState<string[]>([]);
+  const [scores, setScores] = useState<number[]>([]); // 점수를 저장할 상태
   const {hasPermission} = route.params;
   const [recording, setRecording] = useState(false);
   const [recordingFinished, setRecordingFinished] = useState(false);
@@ -111,21 +112,25 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://192.168.45.244:3000/users/evaluate-pronunciation',
+        'http://10.0.2.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0],
         },
       );
-      const {score} = response.data;
+      let {score} = response.data;
 
-      if (!isNaN(score)) {
-        console.log('Score:', score);
-        navigation.navigate('Playing2', {scripts: scripts.slice(1)});
-      } else {
-        console.error('Invalid score:', score);
-        Alert.alert('Error', 'Invalid score received from server');
+      if (isNaN(score)) {
+        score = '1.00';
       }
+
+      console.log('Score:', score);
+      setScores([...scores, score]); // 점수를 배열에 추가
+
+      navigation.navigate('Playing2', {
+        scores: [...scores, score],
+        scripts: scripts.slice(1),
+      });
     } catch (error: any) {
       if (error.response) {
         console.error('Error response:', error.response.data);
