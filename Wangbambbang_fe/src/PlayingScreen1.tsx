@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -7,15 +8,14 @@ import {
   TouchableOpacity,
   Animated,
   Alert,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../App';
+import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
-import {RouteProp} from '@react-navigation/native';
 import axios from 'axios';
+
+import {RootStackParamList} from '../App';
 
 type PlayingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -29,7 +29,6 @@ type Props = {
 };
 
 const shortScript = ['맑음', '엄마', '아빠', '동생', '웃음'];
-
 const longScript = [
   '안녕하세요 저는 이수민입니다',
   '만나서 반가워요',
@@ -48,22 +47,15 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 }) => {
   const [progress, setProgress] = useState(new Animated.Value(0));
   const [scripts, setScripts] = useState<string[]>([]);
-  // const [hasPermission, setHasPermission] = useState(false);
   const {hasPermission} = route.params;
   const [recording, setRecording] = useState(false);
   const [recordingFinished, setRecordingFinished] = useState(false);
-  const [audioPath, setAudioPath] = useState(
-    `${AudioUtils.DocumentDirectoryPath}/test.aac`,
-  );
+  const [audioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
   const [timerFinished, setTimerFinished] = useState(false);
   const [base64String, setBase64String] = useState('');
 
   const getDuration = (script: string) => {
-    if (shortScript.includes(script)) {
-      return 2000; // 1.5초
-    } else {
-      return 4000; // 4초
-    }
+    return shortScript.includes(script) ? 2000 : 4000;
   };
 
   useEffect(() => {
@@ -80,10 +72,9 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
       toValue: 1,
       duration: duration,
       useNativeDriver: false,
-    }).start(async ({finished}) => {
+    }).start(({finished}) => {
       if (finished) {
         setTimerFinished(true);
-        console.log('axios 앞', base64String);
       }
     });
   };
@@ -95,43 +86,26 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
         Channels: 1,
         AudioQuality: 'High',
         AudioEncoding: 'aac',
-        IncludeBase64: true, // Base64 인코딩을 포함하도록 설정
+        IncludeBase64: true,
       });
-
-      AudioRecorder.onProgress = data => {
-        // setCurrentTime(Math.floor(data.currentTime));
-      };
 
       AudioRecorder.onFinished = data => {
         setRecordingFinished(data.status === 'OK');
         setBase64String(data.base64);
-        console.log(`Finished recording1: ${data.audioFileURL}`);
-        // console.log(`Base64 Data: ${data.base64}`);
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    console.log('recording start: ', recording);
-  }, [recording]);
-
-  useEffect(() => {
-    console.log('recording Stop: ', recordingFinished);
-  }, [recordingFinished]);
+  }, [hasPermission]);
 
   useEffect(() => {
     if (recording) {
       stopRecording();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerFinished]);
 
   useEffect(() => {
     if (recordingFinished && base64String) {
       sendPost();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordingFinished, base64String]);
 
   const sendPost = async () => {
@@ -143,32 +117,31 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
           script: scripts[0],
         },
       );
-      console.log(response.data);
+      const {score} = response.data;
+
+      if (!isNaN(score)) {
+        console.log('Score:', score);
+        navigation.navigate('Playing2', {scripts: scripts.slice(1)});
+      } else {
+        console.error('Invalid score:', score);
+        Alert.alert('Error', 'Invalid score received from server');
+      }
     } catch (error: any) {
       if (error.response) {
-        // 서버가 응답했지만 상태 코드가 2xx 범위가 아닙니다.
         console.error('Error response:', error.response.data);
       } else if (error.request) {
-        // 요청이 만들어졌지만 응답을 받지 못했습니다.
         console.error('Error request:', error.request);
       } else {
-        // 요청을 설정하는 중에 오류가 발생했습니다.
         console.error('Error message:', error.message);
       }
     }
   };
 
   useEffect(() => {
-    console.log('updated');
-  }, [base64String]);
-
-  useEffect(() => {
-    console.log(hasPermission);
     if (scripts.length > 0) {
       startRecording();
       startTimer(getDuration(scripts[0]));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scripts, hasPermission]);
 
   const startRecording = async () => {
@@ -220,19 +193,6 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
       {cancelable: false},
     );
   };
-
-  // const evaluatePronunciation = async (audioData: string, script: string) => {
-  //     try {
-  //       const response = await axios.post('http://10.0.2.2:3000/users/evaluate-pronunciation', {
-  //         audioData,
-  //         script,
-  //       });
-
-  //       console.log('Response:', response.data);
-  //     } catch (error: any) {
-  //         console.error('Error evaluating pronunciation:', error.response ? error.response.data : error.message);
-  //       }
-  //   };
 
   const animatedWidth = progress.interpolate({
     inputRange: [0, 1],
