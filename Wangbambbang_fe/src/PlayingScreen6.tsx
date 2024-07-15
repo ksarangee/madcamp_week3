@@ -40,6 +40,8 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({ navigation, route }) =
     const [audioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
     const [timerFinished, setTimerFinished] = useState(false);
     const [base64String, setBase64String] = useState('');
+    const [scores, setScores] = useState<string[]>(route.params?.scores || []);
+
 
     const getDuration = (script: string) => {
         return shortScript.includes(script) ? 2000 : 4000;
@@ -101,15 +103,17 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({ navigation, route }) =
                 audioData: base64String,
                 script: scripts[0]
             });
-            const { score } = response.data;
+            let { score } = response.data;
 
-            if (!isNaN(score)) {
-                console.log('Score:', score);
-                navigation.navigate('Main');
-            } else {
-                console.error('Invalid score:', score);
-                Alert.alert('Error', 'Invalid score received from server');
+            if (isNaN(score)) {
+                score = 1.00;
             }
+            
+            console.log('Score:', score);
+            setScores([...scores, score]); // 점수를 배열에 추가
+
+            navigation.navigate('Score', { scores: [...scores, score]});
+
         } catch (error: any) {
             if (error.response) {
                 console.error('Error response:', error.response.data);
