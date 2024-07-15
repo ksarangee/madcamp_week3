@@ -40,6 +40,8 @@ const longScript = [
     "저는 커서 선생님이 될거에요",
 ];
 
+
+
 const getRandomElements = (array: string[], count: number) => {
     const shuffled = array.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
@@ -60,7 +62,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation, route }) =
 
     const getDuration = (script: string) => {
         if (shortScript.includes(script)) {
-            return 1500; // 1.5초
+            return 2000; // 1.5초
         } else {
             return 4000; // 4초
         }
@@ -84,9 +86,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation, route }) =
         }).start(async ({ finished }) => {
             if (finished) {              
                 setTimerFinished(true);
-                // evaluatePronunciation(base64String, scripts[0]);
-                navigation.navigate('Playing2', { scripts: scripts.slice(1) });
-                // navigation.navigate('Main');
+                console.log("axios 앞", base64String);
             }
         });
     };
@@ -96,7 +96,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation, route }) =
             AudioRecorder.prepareRecordingAtPath(audioPath, {
                 SampleRate: 16000,
                 Channels: 1,
-                AudioQuality: "Low",
+                AudioQuality: "High",
                 AudioEncoding: "aac",
                 IncludeBase64: true, // Base64 인코딩을 포함하도록 설정
             });
@@ -109,8 +109,8 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation, route }) =
                 setRecordingFinished(data.status === "OK");
                 setBase64String(data.base64);
                 console.log(`Finished recording1: ${data.audioFileURL}`);
-                
                 // console.log(`Base64 Data: ${data.base64}`);
+
             };
         }
     }, []);
@@ -129,6 +129,33 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({ navigation, route }) =
         }
         
     }, [timerFinished])
+
+    useEffect(() => {
+        if (recordingFinished && base64String) {
+            sendPost();
+        }
+    }, [recordingFinished, base64String]);
+
+    const sendPost = async () => {
+        try {
+          const response = await axios.post('http://10.0.2.2:3000/users/evaluate-pronunciation', {
+            audioData: base64String,
+            script: scripts[0]
+          });
+          console.log(response.data);
+        } catch (error:any) {
+          if (error.response) {
+            // 서버가 응답했지만 상태 코드가 2xx 범위가 아닙니다.
+            console.error('Error response:', error.response.data);
+          } else if (error.request) {
+            // 요청이 만들어졌지만 응답을 받지 못했습니다.
+            console.error('Error request:', error.request);
+          } else {
+            // 요청을 설정하는 중에 오류가 발생했습니다.
+            console.error('Error message:', error.message);
+          }
+        }
+      };
 
     useEffect(() => {
         console.log("updated")

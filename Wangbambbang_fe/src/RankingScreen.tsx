@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -12,6 +13,7 @@ import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useRanking} from './RankingContext';
+import axios from 'axios';
 
 type RankingScreenRouteProp = RouteProp<RootStackParamList, 'Ranking'>;
 type RankingScreenNavigationProp = StackNavigationProp<
@@ -26,6 +28,22 @@ const RankingScreen = () => {
   const [name, setName] = useState('');
   const score = route.params?.score || 0;
   const fromScoreScreen = route.params?.fromScoreScreen || false;
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        console.log("hi")
+        const response = await axios.get('http://10.0.2.2:3000/users');
+        // setUsers(response.data);
+        console.log(response.data)
+      } catch (error) {
+        Alert.alert('Error', 'Failed to fetch users');
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleAddScore = () => {
     if (name.trim() === '') return;

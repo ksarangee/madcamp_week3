@@ -19,13 +19,14 @@ export class UsersController {
     return this.usersService.getUser();
   }
 
-  @Post('evaluate-pronunciation') // Evaluate pronunciation and return score
-  async evaluatePronunciation(
-    @Body() EvaluatePronunciationDto: EvaluatePronunciationDto,
-  ) {
-    const { audioData, script } = EvaluatePronunciationDto;
-    return this.usersService.evaluatePronunciation(audioData, script);
-  }
+  @Post('evaluate-pronunciation')
+async evaluatePronunciation(
+  @Body() evaluatePronunciationDto: EvaluatePronunciationDto,
+) {
+  const { audioData, script } = evaluatePronunciationDto;
+  console.log('Received data:', { audioData, script });
+  return this.usersService.evaluatePronunciation(audioData, script);
+}
 
   @Post('save-score') // Save user score after evaluation
   async saveScore(@Body() saveScoreDto: SaveScoreDto) {
