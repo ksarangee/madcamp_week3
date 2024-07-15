@@ -112,7 +112,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:3000/users/evaluate-pronunciation',
+        'http://192.168.45.244:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0],

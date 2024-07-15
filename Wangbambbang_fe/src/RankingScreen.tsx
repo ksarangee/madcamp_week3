@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
@@ -41,12 +42,30 @@ const RankingScreen = () => {
   const fromScoreScreen = route.params?.fromScoreScreen || false;
   const [users, setUsers] = useState<User[]>([]);
 
+  const checkAndResetRanking = async () => {
+    try {
+      const response = await api.get('/users');
+      const today = new Date().toISOString().split('T')[0]; // 오늘 날짜
+
+      if (response.data.length > 0) {
+        const firstUserDate = response.data[0].createdAt; // 첫 번째 유저의 날짜
+        if (firstUserDate !== today) {
+          // 날짜가 다르면 초기화
+          await api.delete('/users');
+          console.log('Ranking has been reset.');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking/resetting ranking:', error);
+    }
+  };
+
   const fetchUsers = async () => {
     try {
       console.log('Fetching users...');
+      await checkAndResetRanking(); // 유저 데이터 확인 및 초기화
       const response = await api.get('/users');
       console.log('Raw response:', response);
-      console.log('Raw response data:', response.data);
       if (Array.isArray(response.data)) {
         const sortedUsers = response.data.sort(
           (a: User, b: User) => b.score - a.score,
@@ -103,13 +122,20 @@ const RankingScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.rankingContainer}>
-          {users.map((user, index) => (
-            <View key={index} style={styles.rankingItem}>
-              <Text style={styles.rankingText}>
-                {index + 1}. {user.username} - {user.score}
-              </Text>
-            </View>
-          ))}
+          {users.length === 0 ? (
+            <Text style={styles.emptyMessage}>
+              오늘은 아직 아무도 플레이하지 않았어요!{'\n'}랭킹의 첫 주인공이
+              되어주세요!
+            </Text>
+          ) : (
+            users.map((user, index) => (
+              <View key={index} style={styles.rankingItem}>
+                <Text style={styles.rankingText}>
+                  {index + 1}. {user.username} - {user.score}
+                </Text>
+              </View>
+            ))
+          )}
         </View>
         {fromScoreScreen ? (
           <View style={styles.inputContainer}>
@@ -165,6 +191,13 @@ const styles = StyleSheet.create({
   },
   rankingText: {
     fontSize: 16,
+  },
+  emptyMessage: {
+    //날짜 바뀌어서 순위 차트 비워졌을 때
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#D3D3D3',
+    marginVertical: 20,
   },
   inputContainer: {
     marginTop: 20,

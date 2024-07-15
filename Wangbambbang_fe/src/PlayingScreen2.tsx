@@ -52,7 +52,7 @@ const PlayingScreen2: React.FunctionComponent<Props> = ({
   const [audioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
   const [timerFinished, setTimerFinished] = useState(false);
   const [base64String, setBase64String] = useState('');
-  const [scores, setScores] = useState<number[]>(route.params?.scores || []);
+  const [scores, setScores] = useState<string[]>(route.params?.scores || []);
 
   const getDuration = (script: string) => {
     return shortScript.includes(script) ? 2000 : 4000;
@@ -109,7 +109,7 @@ const PlayingScreen2: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:3000/users/evaluate-pronunciation',
+        'http://192.168.45.244:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0],
