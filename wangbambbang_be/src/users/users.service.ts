@@ -1,3 +1,4 @@
+// users.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -77,5 +78,10 @@ export class UsersService {
   async saveScore(saveScoreDto: SaveScoreDto) {
     const newUser = new this.userModel(saveScoreDto);
     return newUser.save();
+  }
+
+  // createdAt 비교해서 다르면 db에서 delete all users (새로운 랭킹차트 보여줘야 하니깐)
+  async deleteAllUsers() {
+    return this.userModel.deleteMany({});
   }
 }

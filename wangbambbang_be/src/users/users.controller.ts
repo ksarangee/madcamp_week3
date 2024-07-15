@@ -1,5 +1,5 @@
 // users.controller.ts
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { EvaluatePronunciationDto } from './dto/EvaluatePronunciation.dto';
@@ -30,5 +30,10 @@ export class UsersController {
   @Post('save-score') // Save user score after evaluation
   async saveScore(@Body() saveScoreDto: SaveScoreDto) {
     return this.usersService.saveScore(saveScoreDto);
+  }
+
+  @Delete() // Delete all users
+  async deleteAllUsers() {
+    return this.usersService.deleteAllUsers();
   }
 }
