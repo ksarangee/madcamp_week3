@@ -6,37 +6,52 @@ import {
     StyleSheet,
     TouchableOpacity,
     Animated,
-    Alert
+    Alert,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../App';
 import LottieView from 'lottie-react-native';
 import { AudioUtils, AudioRecorder } from 'react-native-audio';
+import axios from 'axios';
 
-type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing4'>;
-type PlayingScreenRouteProp = RouteProp<RootStackParamList, 'Playing4'>;
+import { RootStackParamList } from '../App';
+
+type PlayingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Playing2'>;
+type PlayingScreenRouterProp = RouteProp<RootStackParamList, 'Playing2'>;
 
 type Props = {
     navigation: PlayingScreenNavigationProp;
-    route: PlayingScreenRouteProp;
+    route: PlayingScreenRouterProp;
+};
+
+const shortScript = ["맑음", "엄마", "아빠", "동생", "웃음"];
+const longScript = ["안녕하세요 저는 이수민입니다", "만나서 반가워요", "막내가 제일 힘들어", "저는 커서 선생님이 될거에요"];
+
+const getRandomElements = (array: string[], count: number) => {
+    const shuffled = array.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
 };
 
 const PlayingScreen4: React.FunctionComponent<Props> = ({ navigation, route }) => {
     const [progress, setProgress] = useState(new Animated.Value(0));
-    const { scripts } = route.params;
+    const [scripts, setScripts] = useState<string[]>([]);
     const [recording, setRecording] = useState(false);
     const [recordingFinished, setRecordingFinished] = useState(false);
-    const [audioPath, setAudioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
+    const [audioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
     const [timerFinished, setTimerFinished] = useState(false);
+    const [base64String, setBase64String] = useState('');
 
     const getDuration = (script: string) => {
-        if (script.includes("short")) {
-            return 1500; // 1.5초
-        } else {
-            return 4000; // 4초
-        }
+        return shortScript.includes(script) ? 2000 : 4000;
     };
+
+    useEffect(() => {
+        const initialScripts = [
+            ...getRandomElements(shortScript, 3),
+            ...getRandomElements(longScript, 3)
+        ];
+        setScripts(initialScripts);
+    }, []);
 
     const startTimer = (duration: number) => {
         setTimerFinished(false);
@@ -44,35 +59,67 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({ navigation, route }) =
             toValue: 1,
             duration: duration,
             useNativeDriver: false,
-        }).start(async ({ finished }) => {
+        }).start(({ finished }) => {
             if (finished) {              
                 setTimerFinished(true);
-                navigation.navigate('Playing5', { scripts: scripts.slice(1) });
-                // navigation.navigate('Main');
             }
         });
     };
 
     useEffect(() => {
+
             AudioRecorder.prepareRecordingAtPath(audioPath, {
                 SampleRate: 16000,
                 Channels: 1,
                 AudioQuality: "High",
                 AudioEncoding: "aac",
-                IncludeBase64: true, // Base64 인코딩을 포함하도록 설정
+                IncludeBase64: true,
             });
-
-            AudioRecorder.onProgress = (data) => {
-                // setCurrentTime(Math.floor(data.currentTime));
-            };
 
             AudioRecorder.onFinished = (data) => {
                 setRecordingFinished(data.status === "OK");
-                console.log(`Finished recording2: ${data.audioFileURL}`);
-                // console.log(`Base64 Data: ${data.base64}`);
+                setBase64String(data.base64);
             };
 
     }, []);
+
+    useEffect(() => {
+        if (recording) {
+            stopRecording();
+        }
+    }, [timerFinished]);
+
+    useEffect(() => {
+        if (recordingFinished && base64String) {
+            sendPost();
+        }
+    }, [recordingFinished, base64String]);
+
+    const sendPost = async () => {
+        try {
+            const response = await axios.post('http://10.0.2.2:3000/users/evaluate-pronunciation', {
+                audioData: base64String,
+                script: scripts[0]
+            });
+            const { score } = response.data;
+
+            if (!isNaN(score)) {
+                console.log('Score:', score);
+                navigation.navigate('Playing5', { scripts: scripts.slice(1) });
+            } else {
+                console.error('Invalid score:', score);
+                Alert.alert('Error', 'Invalid score received from server');
+            }
+        } catch (error: any) {
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+            } else {
+                console.error('Error message:', error.message);
+            }
+        }
+    };
 
     useEffect(() => {
         if (scripts.length > 0) {
@@ -80,21 +127,6 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({ navigation, route }) =
             startTimer(getDuration(scripts[0]));
         }
     }, [scripts]);
-
-    useEffect (() => {
-        console.log("recording start: ",recording)
-    }, [recording])
-
-    useEffect(() => {
-        console.log("recording Stop: ", recordingFinished)
-    }, [recordingFinished])
-
-    useEffect(() => {
-        if(recording) {
-            stopRecording();
-        }
-        
-    }, [timerFinished])
 
     const startRecording = async () => {
 
@@ -228,6 +260,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    checkIcon: {
+        width: 30,
+        height: 30,
+    },
     checkCircle: {
         width: 40,
         height: 40,
@@ -244,10 +280,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         backgroundColor: '#706DFF',
         position: 'absolute',
-    },
-    checkIcon: {
-        width: 30,
-        height: 30,
     },
     timeBarContainer: {
         flexDirection: 'row',
