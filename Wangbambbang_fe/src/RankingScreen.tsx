@@ -12,8 +12,13 @@ import {
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {useRanking} from './RankingContext';
 import axios from 'axios';
+
+// 유저 타입 정의
+interface User {
+  username: string;
+  score: number;
+}
 
 type RankingScreenRouteProp = RouteProp<RootStackParamList, 'Ranking'>;
 type RankingScreenNavigationProp = StackNavigationProp<
@@ -24,21 +29,37 @@ type RankingScreenNavigationProp = StackNavigationProp<
 const RankingScreen = () => {
   const route = useRoute<RankingScreenRouteProp>();
   const navigation = useNavigation<RankingScreenNavigationProp>();
-  const {data, addPlayer} = useRanking();
   const [name, setName] = useState('');
   const score = route.params?.score || 0;
   const fromScoreScreen = route.params?.fromScoreScreen || false;
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]); // 유저 타입을 명시적으로 지정
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        console.log("hi")
-        const response = await axios.get('http://10.0.2.2:3000/users');
-        // setUsers(response.data);
-        console.log(response.data)
+        console.log('Fetching users...');
+        const response = await axios.get('http://192.168.45.244:3000/users');
+        console.log('Raw response:', response);
+        console.log('Raw response data:', response.data);
+        if (Array.isArray(response.data)) {
+          const sortedUsers = response.data.sort(
+            (a: User, b: User) => b.score - a.score,
+          );
+          setUsers(sortedUsers);
+          console.log('Sorted users:', sortedUsers);
+        } else {
+          console.error('Unexpected data format:', response.data);
+          Alert.alert('Error', 'Unexpected data format received from server');
+        }
       } catch (error) {
-        Alert.alert('Error', 'Failed to fetch users');
+        if (axios.isAxiosError(error)) {
+          console.error('Axios error:', error.message);
+          console.error('Error response:', error.response?.data);
+          Alert.alert('Error', `Failed to fetch users: ${error.message}`);
+        } else {
+          console.error('Unknown error:', error);
+          Alert.alert('Error', 'An unknown error occurred');
+        }
       }
     };
 
@@ -47,7 +68,7 @@ const RankingScreen = () => {
 
   const handleAddScore = () => {
     if (name.trim() === '') return;
-    addPlayer(name, score);
+    // addPlayer(name, score); // 이 부분은 현재 사용되지 않으므로 주석 처리
     setName('');
     navigation.navigate('Ranking', {fromScoreScreen: false});
   };
@@ -61,10 +82,10 @@ const RankingScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.rankingContainer}>
-          {data.map((player, index) => (
+          {users.map((user, index) => (
             <View key={index} style={styles.rankingItem}>
               <Text style={styles.rankingText}>
-                {index + 1}. {player.name} - {player.score}
+                {index + 1}. {user.username} - {user.score}
               </Text>
             </View>
           ))}

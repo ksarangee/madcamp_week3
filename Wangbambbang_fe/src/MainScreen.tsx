@@ -23,30 +23,33 @@ const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(false);
   useEffect(() => {
     const requestAudioPermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-                    {
-                        title: 'Audio Permission',
-                        message: 'App needs access to your microphone to record audio.',
-                        buttonNeutral: 'Ask Me Later',
-                        buttonNegative: 'Cancel',
-                        buttonPositive: 'OK',
-                    },
-                );
-                setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
-                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-                    Alert.alert('Permission denied', 'You need to give audio permission to use this feature.');
-                }
-            } catch (err) {
-                console.warn(err);
-            }
+      if (Platform.OS === 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+            {
+              title: 'Audio Permission',
+              message: 'App needs access to your microphone to record audio.',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            },
+          );
+          setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            Alert.alert(
+              'Permission denied',
+              'You need to give audio permission to use this feature.',
+            );
+          }
+        } catch (err) {
+          console.warn(err);
         }
+      }
     };
 
     requestAudioPermission();
-}, []);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -61,7 +64,7 @@ const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
 
       <Text style={styles.appName}>왕밤빵</Text>
 
-      <View style={styles.iconPlaceholder}></View>
+      <View style={styles.iconPlaceholder} />
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Playing1', {hasPermission})}
