@@ -20,6 +20,13 @@ interface User {
   score: number;
 }
 
+// axios 인스턴스 생성
+const api = axios.create({
+  baseURL: 'http://192.168.45.244:3000',
+  timeout: 30000,
+});
+
+// React Navigation 관련 타입 정의
 type RankingScreenRouteProp = RouteProp<RootStackParamList, 'Ranking'>;
 type RankingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -32,45 +39,59 @@ const RankingScreen = () => {
   const [name, setName] = useState('');
   const score = route.params?.score || 0;
   const fromScoreScreen = route.params?.fromScoreScreen || false;
-  const [users, setUsers] = useState<User[]>([]); // 유저 타입을 명시적으로 지정
+  const [users, setUsers] = useState<User[]>([]);
+
+  const fetchUsers = async () => {
+    try {
+      console.log('Fetching users...');
+      const response = await api.get('/users');
+      console.log('Raw response:', response);
+      console.log('Raw response data:', response.data);
+      if (Array.isArray(response.data)) {
+        const sortedUsers = response.data.sort(
+          (a: User, b: User) => b.score - a.score,
+        );
+        setUsers(sortedUsers);
+        console.log('Sorted users:', sortedUsers);
+      } else {
+        console.error('Unexpected data format:', response.data);
+        Alert.alert('Error', 'Unexpected data format received from server');
+      }
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+          Alert.alert('Error', `Server error: ${error.response.data}`);
+        } else if (error.request) {
+          console.error('Error request:', error.request);
+          Alert.alert('Error', 'No response received from server');
+        } else {
+          console.error('Error message:', error.message);
+          Alert.alert('Error', `Request failed: ${error.message}`);
+        }
+      } else {
+        console.error('Unknown error:', error);
+        Alert.alert('Error', 'An unknown error occurred');
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        console.log('Fetching users...');
-        const response = await axios.get('http://192.168.45.244:3000/users');
-        console.log('Raw response:', response);
-        console.log('Raw response data:', response.data);
-        if (Array.isArray(response.data)) {
-          const sortedUsers = response.data.sort(
-            (a: User, b: User) => b.score - a.score,
-          );
-          setUsers(sortedUsers);
-          console.log('Sorted users:', sortedUsers);
-        } else {
-          console.error('Unexpected data format:', response.data);
-          Alert.alert('Error', 'Unexpected data format received from server');
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.error('Axios error:', error.message);
-          console.error('Error response:', error.response?.data);
-          Alert.alert('Error', `Failed to fetch users: ${error.message}`);
-        } else {
-          console.error('Unknown error:', error);
-          Alert.alert('Error', 'An unknown error occurred');
-        }
-      }
-    };
-
     fetchUsers();
   }, []);
 
-  const handleAddScore = () => {
+  const handleAddScore = async () => {
     if (name.trim() === '') return;
-    // addPlayer(name, score); // 이 부분은 현재 사용되지 않으므로 주석 처리
-    setName('');
-    navigation.navigate('Ranking', {fromScoreScreen: false});
+    try {
+      const newUser = {username: name, score};
+      await api.post('/users/save-score', newUser);
+      setName('');
+      navigation.navigate('Ranking', {fromScoreScreen: false});
+      fetchUsers(); // 새 유저 추가 후 유저 리스트 다시 가져오기
+    } catch (error: any) {
+      console.error('Error saving score:', error);
+      Alert.alert('Error', 'Failed to save score. Please try again.');
+    }
   };
 
   const handleCancel = () => {
