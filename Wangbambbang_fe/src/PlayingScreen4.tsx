@@ -13,7 +13,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
-import axios from 'axios';
+import axios, { isCancel } from 'axios';
 
 import {RootStackParamList} from '../App';
 
@@ -47,7 +47,8 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
   const [timerFinished, setTimerFinished] = useState(false);
   const [base64String, setBase64String] = useState('');
   const [scores, setScores] = useState<string[]>(route.params?.scores || []);
-
+  const [isCancelled, setIsCancelled] = useState(false); // 녹음이 취소되었는지 여부를 나타내는 상태 변수
+  
   const getDuration = (level: string) => {
     switch (level) {
       case '1':
@@ -92,7 +93,7 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
   }, [timerFinished]);
 
   useEffect(() => {
-    if (recordingFinished && base64String) {
+    if (recordingFinished && base64String && !isCancelled) {
       sendPost();
     }
   }, [recordingFinished, base64String]);
@@ -176,8 +177,13 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
         },
         {
           text: '확인',
-          onPress: () => navigation.navigate('Main'),
-        },
+          onPress: async () => {
+            if (recording) {
+                await stopRecording();
+            }
+            setIsCancelled(true); // 녹음 취소 상태로 설정
+            navigation.navigate('Main');
+        }        },
       ],
       {cancelable: false},
     );
