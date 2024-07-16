@@ -23,8 +23,9 @@ export class ScriptService {
         { content: '맑다', level: ScriptLevel.Easy },
         { content: '넓다', level: ScriptLevel.Easy },
         { content: '끝을', level: ScriptLevel.Easy },
-        { content: '볶음밥', level: ScriptLevel.Easy },
-        { content: '일요일', level: ScriptLevel.Easy },
+        { content: '칡범', level: ScriptLevel.Easy },
+        { content: '진로', level: ScriptLevel.Easy },
+        { content: '볶음', level: ScriptLevel.Easy },
         //어려운 대본들
         {
           content: '담임',
@@ -36,15 +37,15 @@ export class ScriptService {
         },
         { content: '읊다', level: ScriptLevel.Hard },
         {
-          content: '여덟은',
+          content: '석류',
           level: ScriptLevel.Hard,
         },
         {
-          content: '흙에서',
+          content: '협력',
           level: ScriptLevel.Hard,
         },
         {
-          content: '무릎에',
+          content: '막론',
           level: ScriptLevel.Hard,
         },
       ]);

@@ -25,13 +25,13 @@ export type RootStackParamList = {
         score?: number;
       }
     | undefined;
-  Playing1: {hasPermission : boolean};
-  Playing2: { scores: string[], scripts: ScriptType[] };
-  Playing3: { scores: string[], scripts: ScriptType[] };
-  Playing4: { scores: string[], scripts: ScriptType[] };
-  Playing5: { scores: string[], scripts: ScriptType[] };
-  Playing6: { scores: string[], scripts: ScriptType[] };
-  Score: {scores: string[],}; 
+  Playing1: {hasPermission: boolean};
+  Playing2: {scores: string[]; scripts: ScriptType[]};
+  Playing3: {scores: string[]; scripts: ScriptType[]};
+  Playing4: {scores: string[]; scripts: ScriptType[]};
+  Playing5: {scores: string[]; scripts: ScriptType[]};
+  Playing6: {scores: string[]; scripts: ScriptType[]};
+  Score: {scores: string[]};
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
