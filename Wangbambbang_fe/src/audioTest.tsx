@@ -30,27 +30,7 @@ const AudioRecordExample = () => {
         requestPermission();
     }, []);
 
-    useEffect(() => {
-        if (hasPermission) {
-            AudioRecorder.prepareRecordingAtPath(audioPath, {
-                SampleRate: 22050,
-                Channels: 1,
-                AudioQuality: "High",
-                AudioEncoding: "aac",
-                IncludeBase64: true, // Base64 인코딩을 포함하도록 설정
-            });
-
-            AudioRecorder.onProgress = (data) => {
-                setCurrentTime(Math.floor(data.currentTime));
-            };
-
-            AudioRecorder.onFinished = (data) => {
-                setFinished(data.status === "OK");
-                console.log(`Finished recording: ${data.audioFileURL}`);
-                console.log(`Base64 Data: ${data.base64}`);
-            };
-        }
-    }, [hasPermission]);
+    
 
     const startRecording = async () => {
         if (!hasPermission) {

@@ -24,35 +24,29 @@ type Props = {
     route: PlayingScreenRouterProp;
 };
 
-const shortScript = ["맑음", "엄마", "아빠", "동생", "웃음"];
-const longScript = ["안녕하세요 저는 이수민입니다", "만나서 반가워요", "막내가 제일 힘들어", "저는 커서 선생님이 될거에요"];
-
-const getRandomElements = (array: string[], count: number) => {
-    const shuffled = array.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+type ScriptType = {
+    content: string;
+    level: string;
 };
 
 const PlayingScreen2: React.FunctionComponent<Props> = ({ navigation, route }) => {
     const [progress, setProgress] = useState(new Animated.Value(0));
-    const [scripts, setScripts] = useState<string[]>([]);
+    const [scripts, setScripts] = useState<ScriptType[]>(route.params?.scripts || []);
     const [recording, setRecording] = useState(false);
     const [recordingFinished, setRecordingFinished] = useState(false);
     const [audioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
     const [timerFinished, setTimerFinished] = useState(false);
     const [base64String, setBase64String] = useState('');
-    const [scores, setScores] = useState<number[]>(route.params?.scores || []);
+    const [scores, setScores] = useState<string[]>(route.params?.scores || []);
 
-    const getDuration = (script: string) => {
-        return shortScript.includes(script) ? 2000 : 4000;
+    const getDuration = (level: string) => {
+        switch (level) {
+            case '1':
+                return 1500;
+            default:
+                return 3000;
+        }
     };
-
-    useEffect(() => {
-        const initialScripts = [
-            ...getRandomElements(shortScript, 3),
-            ...getRandomElements(longScript, 3)
-        ];
-        setScripts(initialScripts);
-    }, []);
 
     const startTimer = (duration: number) => {
         setTimerFinished(false);
@@ -100,7 +94,7 @@ const PlayingScreen2: React.FunctionComponent<Props> = ({ navigation, route }) =
         try {
             const response = await axios.post('http://10.0.2.2:3000/users/evaluate-pronunciation', {
                 audioData: base64String,
-                script: scripts[0]
+                script: scripts[0].content
             });
             let { score } = response.data;
 
@@ -127,7 +121,7 @@ const PlayingScreen2: React.FunctionComponent<Props> = ({ navigation, route }) =
     useEffect(() => {
         if (scripts.length > 0) {
             startRecording();
-            startTimer(getDuration(scripts[0]));
+            startTimer(getDuration(scripts[0].level));
         }
     }, [scripts]);
 
@@ -166,7 +160,7 @@ const PlayingScreen2: React.FunctionComponent<Props> = ({ navigation, route }) =
             [
                 {
                     text: "취소",
-                    onPress: () => startTimer(getDuration(scripts[0])),
+                    onPress: () => startTimer(getDuration(scripts[0].level)),
                     style: "cancel"
                 },
                 {
@@ -213,7 +207,7 @@ const PlayingScreen2: React.FunctionComponent<Props> = ({ navigation, route }) =
             </View>
 
             <View style={styles.textContainer}>
-                <Text style={styles.text}>{scripts[0]}</Text>
+                <Text style={styles.text}>{scripts[0].content}</Text>
             </View>
 
             <View style={styles.micContainer}>

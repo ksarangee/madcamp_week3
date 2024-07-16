@@ -13,6 +13,11 @@ import RankingScreen from './src/RankingScreen';
 import {RankingProvider} from './src/RankingContext';
 import AudioTestScreen from './src/audioTest';
 
+type ScriptType = {
+  content: string;
+  level: string;
+};
+
 export type RootStackParamList = {
   Main: undefined;
   Ranking:
@@ -22,11 +27,11 @@ export type RootStackParamList = {
       }
     | undefined;
   Playing1: {hasPermission : boolean};
-  Playing2: { scores: string[], scripts: string[] };
-  Playing3: { scores: string[], scripts: string[] };
-  Playing4: { scores: string[], scripts: string[] };
-  Playing5: { scores: string[], scripts: string[] };
-  Playing6: { scores: string[], scripts: string[] };
+  Playing2: { scores: string[], scripts: ScriptType[] };
+  Playing3: { scores: string[], scripts: ScriptType[] };
+  Playing4: { scores: string[], scripts: ScriptType[] };
+  Playing5: { scores: string[], scripts: ScriptType[] };
+  Playing6: { scores: string[], scripts: ScriptType[] };
   Score: {scores: string[],}; 
 };
 
