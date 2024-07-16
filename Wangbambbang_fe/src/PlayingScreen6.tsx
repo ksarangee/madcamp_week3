@@ -100,7 +100,7 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:3000/users/evaluate-pronunciation',
+        'http://172.20.10.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -358,10 +358,11 @@ const styles = StyleSheet.create({
     marginVertical: 40,
   },
   text: {
-    fontSize: 40,
+    fontSize: 50,
     color: 'black',
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'Dongle-Bold',
   },
   micContainer: {
     width: 320,

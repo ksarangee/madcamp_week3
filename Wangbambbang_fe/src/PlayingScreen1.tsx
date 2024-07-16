@@ -365,10 +365,11 @@ const styles = StyleSheet.create({
     marginVertical: 40,
   },
   text: {
-    fontSize: 40,
+    fontSize: 60,
     color: 'black',
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'Dongle-Bold',
   },
   micContainer: {
     width: 320,

@@ -101,8 +101,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: height / 2 - 170,
     fontSize: 55,
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     color: 'black',
+    fontFamily: 'Dongle-Bold',
   },
   iconPlaceholder: {
     width: 100,
@@ -122,14 +123,15 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   playButtonText: {
-    fontSize: 35,
-    fontWeight: 'bold',
+    fontSize: 45,
+    //fontWeight: 'bold',
     color: '#706DFF',
+    fontFamily: 'Dongle-Bold',
     marginRight: 10, // 아이콘과 텍스트 사이에 공간 추가
   },
   playIcon: {
-    width: 25, // 아이콘 크기 조절
-    height: 25,
+    width: 20, // 아이콘 크기 조절
+    height: 20,
   },
 });
 

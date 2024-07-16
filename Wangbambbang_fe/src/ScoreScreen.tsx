@@ -29,19 +29,19 @@ const transformScore = (score: number): number => {
   if (score > 2.5) return 100;
   if (score < 1.0) return 50;
   if (score >= 1.0 && score <= 1.2) return 60;
-  if (score > 1.2 && score <= 1.25) return 65;
-  if (score > 1.25 && score <= 1.3) return 67;
-  if (score > 1.3 && score <= 1.4) return 70;
-  if (score > 1.4 && score <= 1.5) return 73;
-  if (score > 1.5 && score <= 1.6) return 75;
-  if (score > 1.6 && score <= 1.65) return 77;
-  if (score > 1.65 && score <= 1.75) return 80;
-  if (score > 1.75 && score <= 1.8) return 83;
-  if (score > 1.8 && score <= 1.85) return 85;
-  if (score > 1.85 && score <= 2.0) return 87;
-  if (score > 2.0 && score <= 2.1) return 90;
-  if (score > 2.1 && score <= 2.2) return 93;
-  if (score > 2.2 && score <= 2.3) return 95;
+  if (score > 1.2 && score <= 1.22) return 65;
+  if (score > 1.22 && score <= 1.24) return 67;
+  if (score > 1.24 && score <= 1.27) return 70;
+  if (score > 1.27 && score <= 1.3) return 73;
+  if (score > 1.3 && score <= 1.33) return 75;
+  if (score > 1.33 && score <= 1.36) return 77;
+  if (score > 1.36 && score <= 1.39) return 80;
+  if (score > 1.39 && score <= 1.41) return 83;
+  if (score > 1.41 && score <= 1.43) return 85;
+  if (score > 1.43 && score <= 1.45) return 87;
+  if (score > 1.45 && score <= 1.55) return 90;
+  if (score > 1.55 && score <= 1.95) return 93;
+  if (score > 1.95 && score <= 2.3) return 95;
   if (score > 2.3 && score <= 2.5) return 97;
   return 0; // 기본값
 };
@@ -62,12 +62,24 @@ const average = (array: (string | number)[]): number => {
   return parseFloat((total / transformedScores.length).toFixed(1));
 };
 
+const getComment = (score: number): string => {
+  if (score >= 95 && score <= 100) return '아나운서 아니세요?';
+  if (score >= 90 && score < 95) return '세종대왕님이 기뻐하시네요!';
+  if (score >= 85 && score < 90) return '국어 공부를 하셨군요!';
+  if (score >= 80 && score < 85) return '발음이 나쁘진 않아요!';
+  if (score >= 75 && score < 80) return '한글을 더 공부해볼까요?';
+  if (score >= 70 && score < 75) return '한글을 차근차근 배워보아요!';
+  return '한글을 더 차근차근 배워보아요!';
+};
+
 const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
   const [scores, setScores] = useState<string[]>(route.params?.scores || []);
 
   const transformedScores = scores.map(score =>
     transformScore(parseFloat(score)),
   );
+
+  const averageScore = average(scores);
 
   return (
     <View style={styles.container}>
@@ -78,8 +90,8 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
         loop={false}
       />
       <View style={styles.scoreContainer}>
-        <Text style={styles.scoreText}>{average(scores)}</Text>
-        <Text style={styles.comment}>아나운서 아니세요?</Text>
+        <Text style={styles.scoreText}>{averageScore}</Text>
+        <Text style={styles.comment}>{getComment(averageScore)}</Text>
       </View>
 
       <View style={styles.roundContainer1}>
@@ -126,7 +138,7 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
           onPress={() =>
             navigation.navigate('Ranking', {
               fromScoreScreen: true,
-              score: average(scores), // 실제 점수로 대체
+              score: averageScore, // 실제 점수로 대체
             } as const)
           }>
           <Text style={styles.buttonText}>저장하기</Text>
@@ -152,9 +164,11 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 120,
+    fontFamily: 'Dongle-Bold',
   },
   comment: {
-    fontSize: 20,
+    fontSize: 40,
+    fontFamily: 'Dongle-Bold',
   },
   roundContainer1: {
     flexDirection: 'row',
@@ -184,10 +198,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   roundText: {
-    fontSize: 10,
+    fontSize: 20,
+    fontFamily: 'Dongle-Regular',
   },
   roundScoreText: {
     fontSize: 20,
+    fontFamily: 'Dongle-Regular',
   },
   buttonContainer: {
     height: 80,
@@ -206,8 +222,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 35,
     color: '#706DFF',
+    fontFamily: 'Dongle-Bold',
   },
 });
 

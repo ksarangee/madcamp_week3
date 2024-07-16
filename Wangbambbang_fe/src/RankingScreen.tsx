@@ -9,6 +9,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
+  ImageBackground,
 } from 'react-native';
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
@@ -120,6 +122,10 @@ const RankingScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image
+        style={styles.trophyImage}
+        source={require('../assets/image/trophy.webp')}
+      />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.rankingContainer}>
           {users.length === 0 ? (
@@ -128,11 +134,24 @@ const RankingScreen = () => {
               되어주세요!
             </Text>
           ) : (
-            users.map((user, index) => (
+            users.slice(0, 10).map((user, index) => (
               <View key={index} style={styles.rankingItem}>
-                <Text style={styles.rankingText}>
-                  {index + 1}. {user.username} - {user.score}
-                </Text>
+                {index < 3 ? (
+                  <Image
+                    style={styles.medalImage}
+                    source={
+                      index === 0
+                        ? require('../assets/image/gold.png')
+                        : index === 1
+                        ? require('../assets/image/silver.png')
+                        : require('../assets/image/bronze.png')
+                    }
+                  />
+                ) : (
+                  <Text style={styles.indexText}>{index + 1}</Text>
+                )}
+                <Text style={styles.rankingText}>{user.username}</Text>
+                <Text style={styles.scoreText}>{user.score}</Text>
               </View>
             ))
           )}
@@ -145,7 +164,7 @@ const RankingScreen = () => {
               value={name}
               onChangeText={setName}
             />
-            <Text style={styles.scoreText}>Score: {score}</Text>
+            <Text style={styles.scoreTextInput}>Score: {score}</Text>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.button} onPress={handleAddScore}>
                 <Text style={styles.buttonText}>추가</Text>
@@ -174,6 +193,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#A0EEFF',
   },
+  trophyImage: {
+    width: 50,
+    height: 50,
+    alignSelf: 'center',
+    marginVertical: 5,
+  },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -187,17 +212,38 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   rankingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginVertical: 5,
   },
+  indexText: {
+    fontSize: 25,
+    fontFamily: 'Dongle-Bold',
+    marginRight: 10, // 인덱스와 유저 이름 간격
+    textAlign: 'center',
+  },
   rankingText: {
-    fontSize: 16,
+    fontSize: 25,
+    fontFamily: 'Dongle-Bold',
+    flex: 1, // 유저 이름 공간 확장
+    textAlign: 'center', // 유저 이름 가운데 정렬
+  },
+  scoreText: {
+    fontSize: 25,
+    fontFamily: 'Dongle-Bold',
+    marginLeft: 20, // 유저 이름과 점수 간격 추가
+  },
+  medalImage: {
+    width: 50,
+    height: 50,
+    marginLeft: -20, // 메달 이미지와 유저 이름 간격 추가
   },
   emptyMessage: {
-    //날짜 바뀌어서 순위 차트 비워졌을 때
-    fontSize: 14,
+    fontSize: 20,
     textAlign: 'center',
     color: '#D3D3D3',
-    marginVertical: 20,
+    marginVertical: 30,
+    fontFamily: 'Dongle-Regular',
   },
   inputContainer: {
     marginTop: 20,
@@ -213,9 +259,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 5,
   },
-  scoreText: {
-    fontSize: 16,
+  scoreTextInput: {
+    fontSize: 25,
     marginVertical: 10,
+    fontFamily: 'Dongle-Bold',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -228,8 +275,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 30,
     color: '#706DFF',
+    fontFamily: 'Dongle-Bold',
   },
   mainButtonContainer: {
     marginTop: 20,
@@ -241,8 +289,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   mainButtonText: {
-    fontSize: 16,
+    fontSize: 30,
     color: '#706DFF',
+    fontFamily: 'Dongle-Bold',
   },
 });
 

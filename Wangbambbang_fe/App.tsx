@@ -11,6 +11,7 @@ import PlayingScreen6 from './src/PlayingScreen6';
 import ScoreScreen from './src/ScoreScreen';
 import RankingScreen from './src/RankingScreen';
 import {RankingProvider} from './src/RankingContext';
+import {setCustomText, setCustomTextInput} from 'react-native-global-props';
 
 type ScriptType = {
   content: string;
@@ -35,6 +36,22 @@ export type RootStackParamList = {
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
+
+// 글로벌 텍스트 스타일 설정
+const customTextProps = {
+  style: {
+    fontFamily: 'Dongle-Regular', // 기본 폰트 설정
+  },
+};
+
+const customTextInputProps = {
+  style: {
+    fontFamily: 'Dongle-Regular', // 기본 폰트 설정
+  },
+};
+
+setCustomText(customTextProps);
+setCustomTextInput(customTextInputProps);
 
 function App(): React.JSX.Element {
   return (

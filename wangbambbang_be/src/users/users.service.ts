@@ -22,7 +22,7 @@ export class UsersService {
   }
 
   async evaluatePronunciation(audioData: string, script: string) {
-    const accessKey = 'eb836333-d3fc-4fe1-ba18-d15dbf05d29d';
+    const accessKey = process.env.API_KEY;
     const languageCode = 'korean';
     const openApiURL = 'http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor';
 
