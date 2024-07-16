@@ -206,7 +206,7 @@ const PlayingScreen3: React.FunctionComponent<Props> = ({
       <TouchableOpacity style={styles.header} onPress={handleBackPress}>
         <Image
           style={styles.backIcon}
-          source={require('../assets/image/check.png')}
+          source={require('../assets/image/arrow_back.png')}
         />
       </TouchableOpacity>
 
@@ -284,10 +284,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   backIcon: {
-    width: 50,
-    height: 50,
-    justifyContent: 'flex-start',
-  },
+    width: 30,
+    height: 30,
+    marginLeft: -190,
+    justifyContent: 'center'
+},
   checkContainer: {
     flexDirection: 'row',
     alignItems: 'center',
