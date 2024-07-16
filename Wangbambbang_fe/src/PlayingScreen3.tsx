@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Animated,
   Alert,
+  BackHandler,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
@@ -190,6 +191,20 @@ const PlayingScreen3: React.FunctionComponent<Props> = ({
       {cancelable: false},
     );
   };
+
+  useEffect(() => {
+    const backAction = () => {
+        handleBackPress();
+        return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+    );
+
+    return () => backHandler.remove();
+}, [recording]);
 
   const animatedWidth = progress.interpolate({
     inputRange: [0, 1],
