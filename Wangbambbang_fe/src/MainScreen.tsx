@@ -19,6 +19,8 @@ type Props = {
   navigation: MainScreenNavigationProp;
 };
 
+const {width, height} = Dimensions.get('window');
+
 const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(false);
   useEffect(() => {
@@ -58,7 +60,7 @@ const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
         onPress={() => navigation.navigate('Ranking')}>
         <Image
           style={styles.trophyImage}
-          source={require('../assets/image/trophy.webp')}
+          source={require('../assets/image/trophy.jpg')}
         />
       </TouchableOpacity>
 
@@ -79,7 +81,6 @@ const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
   );
 };
 
-const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -94,8 +95,8 @@ const styles = StyleSheet.create({
     right: 20,
   },
   trophyImage: {
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
   },
   appName: {
     position: 'absolute',
@@ -113,14 +114,14 @@ const styles = StyleSheet.create({
   },
   playButton: {
     position: 'absolute',
-    bottom: 100,
+    bottom: height/7,
     flexDirection: 'row', // 아이콘과 텍스트를 나란히 배치
     alignItems: 'center', // 수직 중앙 정렬
     width: 200,
-    height: 50,
+    height: 70,
     backgroundColor: '#FFED8D',
     justifyContent: 'center',
-    borderRadius: 25,
+    borderRadius: 35,
   },
   playButtonText: {
     fontSize: 45,

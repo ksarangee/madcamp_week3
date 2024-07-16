@@ -9,6 +9,7 @@ import {
   Animated,
   Alert,
   BackHandler,
+  Dimensions
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
@@ -33,6 +34,9 @@ type ScriptType = {
   content: string;
   level: string;
 };
+
+const {width, height} = Dimensions.get('window')
+
 
 const PlayingScreen6: React.FunctionComponent<Props> = ({
   navigation,
@@ -102,7 +106,7 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://172.20.10.2:3000/users/evaluate-pronunciation',
+        'http://10.0.2.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -204,11 +208,11 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
 
   const animatedWidth = progress.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 260],
+    outputRange: [0, 220],
   });
 
   const barColor = progress.interpolate({
-    inputRange: [0, 160 / 260, 200 / 260, 1],
+    inputRange: [0, 160 / 220, 200 / 220, 1],
     outputRange: ['#A0EEFF', '#A0EEFF', '#FF5C5C', '#FF5C5C'],
   });
 
@@ -306,27 +310,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    height: 60,
+    height: 50,
     justifyContent: 'center',
   },
   backIcon: {
     width: 30,
     height: 30,
-    marginLeft: -190,
-    justifyContent: 'center'
-},
+    marginLeft:  -170
+  },
   checkContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    height: 50
   },
   checkIcon: {
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25
   },
   checkCircle: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     borderRadius: 20,
     backgroundColor: '#FFFDF1',
     margin: 7,
@@ -335,22 +339,22 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   currentQuestionIndicator: {
-    width: 20,
-    height: 20,
-    borderRadius: 15,
+    width: 35/2,
+    height: 35/2,
+    borderRadius: 35/4,
     backgroundColor: '#706DFF',
     position: 'absolute',
   },
   timeBarContainer: {
     flexDirection: 'row',
-    marginVertical: 20,
+    marginVertical: 10,
     justifyContent: 'center',
-    height: 50,
-    width: 320,
+    height: height*0.08,
+    width: width*0.8,
   },
   clockImage: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     position: 'absolute',
     left: 5,
     top: 5,
@@ -358,7 +362,7 @@ const styles = StyleSheet.create({
   barBack: {
     position: 'absolute',
     height: 30,
-    width: 260,
+    width: 220,
     left: 60,
     top: 10,
     borderRadius: 15,
@@ -372,16 +376,17 @@ const styles = StyleSheet.create({
     top: 10,
   },
   textContainer: {
-    width: 340,
-    height: 300,
+    width: width*0.8,
+    height: height*0.35,
     borderRadius: 30,
     backgroundColor: '#FFFDF1',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 40,
+    marginTop: 30,
+    marginBottom: 10,
   },
   text: {
-    fontSize: 50,
+    fontSize: 60,
     color: 'black',
     //fontWeight: 'bold',
     textAlign: 'center',
@@ -393,16 +398,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 40,
     flexDirection: 'row',
+    justifyContent: 'center'
   },
   micButton: {
-    height: 120,
-    width: 120,
-    borderRadius: 60,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
     backgroundColor: '#FFFDF1',
   },
   micImage: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
   },
 });
 

@@ -11,6 +11,7 @@ import {
   View,
   Image,
   ImageBackground,
+  Dimensions,
 } from 'react-native';
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
@@ -25,7 +26,7 @@ interface User {
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://172.20.10.2:3000',
+  baseURL: 'http://143.248.219.25:3000',
   timeout: 30000,
 });
 
@@ -35,6 +36,8 @@ type RankingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'Ranking'
 >;
+
+const {width, height} = Dimensions.get('window');
 
 const RankingScreen = () => {
   const route = useRoute<RankingScreenRouteProp>();
@@ -122,11 +125,22 @@ const RankingScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        style={styles.trophyImage}
-        source={require('../assets/image/trophy.webp')}
-      />
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <View style = {styles.bannerContainer}>
+        <Image
+          style={styles.trophyImage}
+          source={require('../assets/image/trophy.webp')}
+        />
+        <Text style = {styles.bannerText}>오늘의 순위</Text>
+        <Image
+          style={styles.trophyImage}
+          source={require('../assets/image/trophy.webp')}
+        />
+      </View>
+      
+      <View style = {styles.scrollViewWrapper}>
+      <ScrollView 
+        showsVerticalScrollIndicator = {false}
+        contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.rankingContainer}>
           {users.length === 0 ? (
             <Text style={styles.emptyMessage}>
@@ -137,6 +151,7 @@ const RankingScreen = () => {
             users.slice(0, 10).map((user, index) => (
               <View key={index} style={styles.rankingItem}>
                 {index < 3 ? (
+                  <View style = {styles.indexContainer}>
                   <Image
                     style={styles.medalImage}
                     source={
@@ -147,25 +162,38 @@ const RankingScreen = () => {
                         : require('../assets/image/bronze.png')
                     }
                   />
+                  </View>
                 ) : (
+                  <View style = {styles.indexContainer}>
                   <Text style={styles.indexText}>{index + 1}</Text>
+                  </View>
                 )}
-                <Text style={styles.rankingText}>{user.username}</Text>
+                <View style = {styles.nameTextContainer}>
+                <Text style={styles.nameText}>{user.username}</Text>
+                </View>
                 <Text style={styles.scoreText}>{user.score}</Text>
               </View>
             ))
           )}
         </View>
-        {fromScoreScreen ? (
+        
+      </ScrollView>
+
+      </View>
+
+      
+      {fromScoreScreen ? (
           <View style={styles.inputContainer}>
+            <Text style={styles.scoreTextInput}>Score: {score}</Text>
+            
+            
+            <View style={styles.buttonContainer}>
             <TextInput
               style={styles.input}
               placeholder="기록하시겠어요? 이름을 남겨주세요!"
               value={name}
               onChangeText={setName}
             />
-            <Text style={styles.scoreTextInput}>Score: {score}</Text>
-            <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.button} onPress={handleAddScore}>
                 <Text style={styles.buttonText}>추가</Text>
               </TouchableOpacity>
@@ -183,7 +211,6 @@ const RankingScreen = () => {
             </TouchableOpacity>
           </View>
         )}
-      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -192,52 +219,92 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#A0EEFF',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  bannerContainer: {
+    width: width*0.8,
+    height: 60,
+    backgroundColor: '#FFFDF1',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderRadius: 30,
+    position: 'absolute',
+    top: 60
+  },
+  bannerText: {
+    fontSize: 40,
+    fontFamily: 'Dongle-Bold',
+    color: 'black',
+    marginHorizontal: 10,
   },
   trophyImage: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     alignSelf: 'center',
-    marginVertical: 5,
+  },
+  scrollViewWrapper: {
+    height: height*0.5+10,
+    width: width*0.8, 
+    backgroundColor: '#FFFDF1',
+    borderRadius: 35,
+    marginBottom: 50,
+    position: 'absolute',
+    top: 140
   },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
   },
   rankingContainer: {
-    backgroundColor: '#FFFDF1',
-    padding: 20,
     borderRadius: 10,
     width: '90%',
+    paddingHorizontal: 25,
+    paddingVertical: 15,
   },
   rankingItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 5,
   },
+  indexContainer: {
+    height: width*0.12,
+    width: width*0.12,
+    marginLeft: -20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  medalImage: {
+    height: width*0.15 ,
+    width: width*0.15,
+    marginLeft: -7,
+     // 메달 이미지와 유저 이름 간격 추가
+  },
   indexText: {
     fontSize: 25,
     fontFamily: 'Dongle-Bold',
     marginRight: 10, // 인덱스와 유저 이름 간격
-    textAlign: 'center',
+    color: 'black'
   },
-  rankingText: {
+  nameTextContainer: {
+    width: width*0.35,
+    marginLeft: 10,
+  },
+  nameText: {
     fontSize: 25,
     fontFamily: 'Dongle-Bold',
-    flex: 1, // 유저 이름 공간 확장
-    textAlign: 'center', // 유저 이름 가운데 정렬
+    color: 'black'
   },
   scoreText: {
     fontSize: 25,
     fontFamily: 'Dongle-Bold',
     marginLeft: 20, // 유저 이름과 점수 간격 추가
+    color: 'black'
   },
-  medalImage: {
-    width: 50,
-    height: 50,
-    marginLeft: -20, // 메달 이미지와 유저 이름 간격 추가
-  },
+
   emptyMessage: {
     fontSize: 20,
     textAlign: 'center',
@@ -245,19 +312,25 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     fontFamily: 'Dongle-Regular',
   },
+  totalContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'red',
+    position: 'absolute',
+    top: height*0.75,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   inputContainer: {
-    marginTop: 20,
     alignItems: 'center',
     width: '90%',
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 0,
     borderColor: '#ccc',
     padding: 10,
-    marginVertical: 10,
-    width: '100%',
+    width: width*0.5,
     backgroundColor: '#fff',
-    borderRadius: 5,
+    borderRadius: 25,
   },
   scoreTextInput: {
     fontSize: 25,
@@ -267,12 +340,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    position: 'absolute',
+    top: 240,
   },
   button: {
+    height: 50,
     backgroundColor: '#FFED8D',
     padding: 10,
-    borderRadius: 5,
-    marginHorizontal: 10,
+    borderRadius: 25,
+    marginHorizontal: 5,
   },
   buttonText: {
     fontSize: 30,

@@ -9,6 +9,7 @@ import {
   useColorScheme,
   View,
   TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../App';
@@ -24,7 +25,7 @@ type Props = {
   navigation: ScoreScreenNavigationProp;
   route: ScoreScreenRouterProp;
 };
-
+const {width, height} = Dimensions.get('window')
 const transformScore = (score: number): number => {
   if (score > 2.5) return 100;
   if (score < 1.0) return 50;
@@ -103,20 +104,16 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
           <Text style={styles.roundText}>2ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[1]}</Text>
         </View>
-      </View>
-
-      <View style={styles.roundContainer2}>
         <View style={styles.round}>
           <Text style={styles.roundText}>3ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[2]}</Text>
         </View>
+      </View>
+      <View style={styles.roundContainer2}>
         <View style={styles.round}>
           <Text style={styles.roundText}>4ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[3]}</Text>
         </View>
-      </View>
-
-      <View style={styles.roundContainer3}>
         <View style={styles.round}>
           <Text style={styles.roundText}>5ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[4]}</Text>
@@ -126,6 +123,9 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
           <Text style={styles.roundScoreText}>{transformedScores[5]}</Text>
         </View>
       </View>
+
+        
+        
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -155,55 +155,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scoreContainer: {
-    width: 320,
-    height: 400,
+    width: width*0.8,
+    height: height*0.4,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 50,
     position: 'absolute',
   },
   scoreText: {
-    fontSize: 120,
+    fontSize: 130,
     fontFamily: 'Dongle-Bold',
+    color: '#706DFF'
   },
   comment: {
     fontSize: 40,
     fontFamily: 'Dongle-Bold',
+    color: 'black',
+    marginTop: -20
   },
   roundContainer1: {
     flexDirection: 'row',
     height: 80,
     position: 'absolute',
-    top: 380,
+    top: height*0.5,
   },
   roundContainer2: {
     flexDirection: 'row',
     height: 80,
     position: 'absolute',
-    top: 480,
+    top: height*0.6,
   },
-  roundContainer3: {
-    flexDirection: 'row',
-    height: 80,
-    top: 580,
-    position: 'absolute',
-  },
+
   round: {
     width: 100,
-    height: 80,
-    backgroundColor: 'white',
+    height: 60,
     borderRadius: 20,
-    marginHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   roundText: {
     fontSize: 20,
     fontFamily: 'Dongle-Regular',
+    color: 'black'
   },
   roundScoreText: {
-    fontSize: 20,
+    fontSize: 30,
     fontFamily: 'Dongle-Regular',
+    color: 'black'
   },
   buttonContainer: {
     height: 80,
@@ -214,12 +212,13 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 60,
-    width: 150,
+    width: 120,
     borderRadius: 30,
     backgroundColor: '#FFFDF1',
-    margin: 10,
+    marginHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20,
   },
   buttonText: {
     fontSize: 35,
