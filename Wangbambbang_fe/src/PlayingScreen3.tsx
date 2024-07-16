@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Animated,
   Alert,
+  BackHandler,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
@@ -47,6 +48,8 @@ const PlayingScreen3: React.FunctionComponent<Props> = ({
   const [timerFinished, setTimerFinished] = useState(false);
   const [base64String, setBase64String] = useState('');
   const [scores, setScores] = useState<string[]>(route.params?.scores || []);
+  const [isCancelled, setIsCancelled] = useState(false); // 녹음이 취소되었는지 여부를 나타내는 상태 변수
+
 
   const getDuration = (level: string) => {
     switch (level) {
@@ -92,7 +95,7 @@ const PlayingScreen3: React.FunctionComponent<Props> = ({
   }, [timerFinished]);
 
   useEffect(() => {
-    if (recordingFinished && base64String) {
+    if (recordingFinished && base64String && !isCancelled) {
       sendPost();
     }
   }, [recordingFinished, base64String]);
@@ -175,13 +178,33 @@ const PlayingScreen3: React.FunctionComponent<Props> = ({
           style: 'cancel',
         },
         {
-          text: '확인',
-          onPress: () => navigation.navigate('Main'),
+          text: "확인",
+                    onPress: async () => {
+                        if (recording) {
+                            await stopRecording();
+                        }
+                        setIsCancelled(true); // 녹음 취소 상태로 설정
+                        navigation.navigate('Main');
+                    }
         },
       ],
       {cancelable: false},
     );
   };
+
+  useEffect(() => {
+    const backAction = () => {
+        handleBackPress();
+        return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+    );
+
+    return () => backHandler.remove();
+}, [recording]);
 
   const animatedWidth = progress.interpolate({
     inputRange: [0, 1],
@@ -198,7 +221,7 @@ const PlayingScreen3: React.FunctionComponent<Props> = ({
       <TouchableOpacity style={styles.header} onPress={handleBackPress}>
         <Image
           style={styles.backIcon}
-          source={require('../assets/image/check.png')}
+          source={require('../assets/image/arrow_back.png')}
         />
       </TouchableOpacity>
 
@@ -276,10 +299,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   backIcon: {
-    width: 50,
-    height: 50,
-    justifyContent: 'flex-start',
-  },
+    width: 30,
+    height: 30,
+    marginLeft: -190,
+    justifyContent: 'center'
+},
   checkContainer: {
     flexDirection: 'row',
     alignItems: 'center',

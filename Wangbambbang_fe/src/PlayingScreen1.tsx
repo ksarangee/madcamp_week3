@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Animated,
   Alert,
+  BackHandler,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
@@ -51,10 +52,11 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const [audioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/test.aac`);
   const [timerFinished, setTimerFinished] = useState(false);
   const [base64String, setBase64String] = useState('');
+  const [isCancelled, setIsCancelled] = useState(false); // 녹음이 취소되었는지 여부를 나타내는 상태 변수
 
   const getScript = async () => {
     try {
-      const response = await axios.get('http://172.20.10.2:3000/scripts');
+      const response = await axios.get('http://10.0.2.2:3000/scripts');
       const filteredScripts = response.data.map((script: any) => ({
         content: script.content,
         level: script.level,
@@ -123,7 +125,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   }, [timerFinished]);
 
   useEffect(() => {
-    if (recordingFinished && base64String) {
+    if (recordingFinished && base64String && !isCancelled) {
       sendPost();
     }
   }, [recordingFinished, base64String]);
@@ -131,7 +133,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://172.20.10.2:3000/users/evaluate-pronunciation',
+        'http://10.0.2.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -198,7 +200,21 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
     }
   };
 
-  const handleBackPress = () => {
+  useEffect(() => {
+    const backAction = () => {
+      handleBackPress();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [recording]);
+
+  const handleBackPress = async () => {
     progress.stopAnimation();
     Alert.alert(
       '정말 나가시겠습니까?',
@@ -206,17 +222,28 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
       [
         {
           text: '취소',
-          onPress: () => startTimer(getDuration(scripts[0].content)),
+          onPress: () =>
+            scripts.length > 0 && startTimer(getDuration(scripts[0].level)),
           style: 'cancel',
         },
         {
           text: '확인',
-          onPress: () => navigation.navigate('Main'),
+          onPress: async () => {
+            if (recording) {
+              await stopRecording();
+            }
+            setIsCancelled(true); // 녹음 취소 상태로 설정
+            navigation.navigate('Main');
+          },
         },
       ],
       {cancelable: false},
     );
   };
+
+  useEffect(() => {
+    console.log(recording, stopRecording);
+  }, [recording, stopRecording]);
 
   const animatedWidth = progress.interpolate({
     inputRange: [0, 1],
@@ -233,7 +260,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
       <TouchableOpacity style={styles.header} onPress={handleBackPress}>
         <Image
           style={styles.backIcon}
-          source={require('../assets/image/check.png')}
+          source={require('../assets/image/arrow_back.png')}
         />
       </TouchableOpacity>
 
