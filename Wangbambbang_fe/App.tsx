@@ -11,7 +11,6 @@ import PlayingScreen6 from './src/PlayingScreen6';
 import ScoreScreen from './src/ScoreScreen';
 import RankingScreen from './src/RankingScreen';
 import {RankingProvider} from './src/RankingContext';
-import AudioTestScreen from './src/audioTest';
 
 type ScriptType = {
   content: string;
