@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  Text,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -23,6 +22,13 @@ const {width, height} = Dimensions.get('window');
 
 const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(false);
+  const [fishImage, setFishImage] = useState(
+    require('../assets/image/fishclose.png'),
+  );
+  const [playImage, setPlayImage] = useState(
+    require('../assets/image/play1.png'),
+  );
+
   useEffect(() => {
     const requestAudioPermission = async () => {
       if (Platform.OS === 'android') {
@@ -53,34 +59,55 @@ const MainScreen: React.FunctionComponent<Props> = ({navigation}) => {
     requestAudioPermission();
   }, []);
 
+  useEffect(() => {
+    const fishInterval = setInterval(() => {
+      setFishImage((prevImage: any) =>
+        prevImage === require('../assets/image/fishclose.png')
+          ? require('../assets/image/fishopen.png')
+          : require('../assets/image/fishclose.png'),
+      );
+    }, 500); // 전환 주기를 500ms로 설정
+
+    const playInterval = setInterval(() => {
+      setPlayImage((prevImage: any) =>
+        prevImage === require('../assets/image/play1.png')
+          ? require('../assets/image/play2.png')
+          : require('../assets/image/play1.png'),
+      );
+    }, 250); // 전환 주기를 250ms로 설정
+
+    return () => {
+      clearInterval(fishInterval);
+      clearInterval(playInterval);
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.trophyButton}
+        style={styles.coralButton}
         onPress={() => navigation.navigate('Ranking')}>
         <Image
-          style={styles.trophyImage}
-          source={require('../assets/image/trophy.jpg')}
+          style={styles.coralImage}
+          source={require('../assets/image/coral.png')}
         />
       </TouchableOpacity>
 
-      <Text style={styles.appName}>왕밤빵</Text>
+      <Image
+        style={styles.appNameImage}
+        source={require('../assets/image/pkpk.png')}
+      />
 
-      <View style={styles.iconPlaceholder} />
+      <Image style={styles.iconPlaceholder} source={fishImage} />
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Playing1', {hasPermission})}
         style={styles.playButton}>
-        <Text style={styles.playButtonText}>Play!</Text>
-        <Image
-          style={styles.playIcon}
-          source={require('../assets/image/play.png')} // 아이콘 이미지 파일 경로
-        />
+        <Image style={styles.playButtonImage} source={playImage} />
       </TouchableOpacity>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -89,50 +116,40 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  trophyButton: {
+  coralButton: {
     position: 'absolute',
     top: 20,
-    right: 20,
+    right: 10,
   },
-  trophyImage: {
-    width: 60,
-    height: 60,
+  coralImage: {
+    width: 80,
+    height: 80,
   },
-  appName: {
+  appNameImage: {
     position: 'absolute',
-    top: height / 2 - 170,
-    fontSize: 55,
-    //fontWeight: 'bold',
-    color: 'black',
-    fontFamily: 'Dongle-Bold',
+    top: height / 2 - 190,
+    width: 300, // pkpk.png의 너비
+    height: 100, // pkpk.png의 높이
+    resizeMode: 'contain',
   },
   iconPlaceholder: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-    backgroundColor: 'transparent',
+    width: 250,
+    height: 250,
+    marginBottom: -30,
+    resizeMode: 'contain',
   },
   playButton: {
     position: 'absolute',
-    bottom: height/7,
-    flexDirection: 'row', // 아이콘과 텍스트를 나란히 배치
-    alignItems: 'center', // 수직 중앙 정렬
-    width: 200,
-    height: 70,
-    backgroundColor: '#FFED8D',
+    bottom: 90,
     justifyContent: 'center',
-    borderRadius: 35,
+    alignItems: 'center',
+    width: 220,
+    height: 45,
   },
-  playButtonText: {
-    fontSize: 45,
-    //fontWeight: 'bold',
-    color: '#706DFF',
-    fontFamily: 'Dongle-Bold',
-    marginRight: 10, // 아이콘과 텍스트 사이에 공간 추가
-  },
-  playIcon: {
-    width: 20, // 아이콘 크기 조절
-    height: 20,
+  playButtonImage: {
+    width: '250%', // play1.png와 play2.png의 너비 조정
+    height: '250%', // play1.png와 play2.png의 높이 조정
+    resizeMode: 'contain',
   },
 });
 
