@@ -1,11 +1,12 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {View, Image, StyleSheet, Animated, Easing} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Image, StyleSheet, Animated, Easing } from 'react-native';
 
 const Mic = () => {
   const [micImage, setMicImage] = useState(require('../assets/image/mic.png'));
   const rotateValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+
     const startRotation = () => {
       Animated.sequence([
         Animated.timing(rotateValue, {
@@ -32,7 +33,7 @@ const Mic = () => {
   });
 
   return (
-    <Animated.View style={{transform: [{rotate}]}}>
+    <Animated.View style={{ transform: [{ rotate }] }}>
       <Image source={micImage} style={styles.mic} />
     </Animated.View>
   );
@@ -46,3 +47,4 @@ const styles = StyleSheet.create({
 });
 
 export default Mic;
+

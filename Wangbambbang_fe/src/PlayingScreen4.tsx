@@ -18,6 +18,7 @@ import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios, {isCancel} from 'axios';
 import Mic from './micComponent';
 
+
 import {RootStackParamList} from '../App';
 
 type PlayingScreenNavigationProp = StackNavigationProp<
@@ -107,6 +108,7 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
     try {
       const response = await axios.post(
         'http://10.0.2.2:3000/users/evaluate-pronunciation',
+
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -399,6 +401,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   micImage: {
     width: '100%',
