@@ -16,7 +16,7 @@ import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios from 'axios';
-import Mic from './micComponent';
+// import Mic from './micComponent';
 
 import {RootStackParamList} from '../App';
 
@@ -60,7 +60,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 
   const getScript = async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:3000/scripts');
+      const response = await axios.get('http://172.20.10.6:3000/scripts');
       const filteredScripts = response.data.map((script: any) => ({
         content: script.content,
         level: script.level,
@@ -137,7 +137,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:3000/users/evaluate-pronunciation',
+        'http://172.20.10.6:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -306,7 +306,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
           loop={true}
         />
         <View style={styles.micButton}>
-          <Mic />
+        
         </View>
         <LottieView
           style={{width: '30%', height: '100%'}}
