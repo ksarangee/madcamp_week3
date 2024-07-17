@@ -9,7 +9,8 @@ import {
   useColorScheme,
   View,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  Image,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../App';
@@ -25,7 +26,7 @@ type Props = {
   navigation: ScoreScreenNavigationProp;
   route: ScoreScreenRouterProp;
 };
-const {width, height} = Dimensions.get('window')
+const {width, height} = Dimensions.get('window');
 const transformScore = (score: number): number => {
   if (score > 2.5) return 100;
   if (score < 1.0) return 50;
@@ -97,35 +98,62 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
 
       <View style={styles.roundContainer1}>
         <View style={styles.round}>
+          <Image
+            style={styles.bubbleImage}
+            source={require('../assets/image/bubble.png')}
+            resizeMode="contain"
+          />
           <Text style={styles.roundText}>1ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[0]}</Text>
         </View>
         <View style={styles.round}>
+          <Image
+            style={styles.bubbleImage}
+            source={require('../assets/image/bubble.png')}
+            resizeMode="contain"
+          />
           <Text style={styles.roundText}>2ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[1]}</Text>
         </View>
         <View style={styles.round}>
+          <Image
+            style={styles.bubbleImage}
+            source={require('../assets/image/bubble.png')}
+            resizeMode="contain"
+          />
           <Text style={styles.roundText}>3ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[2]}</Text>
         </View>
       </View>
       <View style={styles.roundContainer2}>
         <View style={styles.round}>
+          <Image
+            style={styles.bubbleImage}
+            source={require('../assets/image/bubble.png')}
+            resizeMode="contain"
+          />
           <Text style={styles.roundText}>4ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[3]}</Text>
         </View>
         <View style={styles.round}>
+          <Image
+            style={styles.bubbleImage}
+            source={require('../assets/image/bubble.png')}
+            resizeMode="contain"
+          />
           <Text style={styles.roundText}>5ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[4]}</Text>
         </View>
         <View style={styles.round}>
+          <Image
+            style={styles.bubbleImage}
+            source={require('../assets/image/bubble.png')}
+            resizeMode="contain"
+          />
           <Text style={styles.roundText}>6ROUND</Text>
           <Text style={styles.roundScoreText}>{transformedScores[5]}</Text>
         </View>
       </View>
-
-        
-        
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -155,8 +183,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scoreContainer: {
-    width: width*0.8,
-    height: height*0.4,
+    width: width * 0.8,
+    height: height * 0.4,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 50,
@@ -165,43 +193,51 @@ const styles = StyleSheet.create({
   scoreText: {
     fontSize: 130,
     fontFamily: 'Dongle-Bold',
-    color: '#706DFF'
+    color: '#706DFF',
   },
   comment: {
     fontSize: 40,
     fontFamily: 'Dongle-Bold',
     color: 'black',
-    marginTop: -20
+    marginTop: -20,
   },
   roundContainer1: {
     flexDirection: 'row',
-    height: 80,
     position: 'absolute',
-    top: height*0.5,
+    top: height * 0.45,
+    marginBottom: 10, // 간격을 넓히기 위한 여백 추가
   },
   roundContainer2: {
     flexDirection: 'row',
-    height: 80,
     position: 'absolute',
-    top: height*0.6,
+    top: height * 0.6,
   },
-
   round: {
     width: 100,
-    height: 60,
-    borderRadius: 20,
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+    marginHorizontal: 5,
+  },
+  bubbleImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
   roundText: {
     fontSize: 20,
     fontFamily: 'Dongle-Regular',
-    color: 'black'
+    color: 'black',
+    position: 'absolute',
+    top: 30,
   },
   roundScoreText: {
     fontSize: 30,
     fontFamily: 'Dongle-Regular',
-    color: 'black'
+    color: 'black',
+    position: 'absolute',
+    bottom: 20,
   },
   buttonContainer: {
     height: 80,

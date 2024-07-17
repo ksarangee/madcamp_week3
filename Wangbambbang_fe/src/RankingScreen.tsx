@@ -26,7 +26,7 @@ interface User {
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://143.248.219.25:3000',
+  baseURL: 'http://172.20.10.2:3000',
   timeout: 30000,
 });
 
@@ -125,92 +125,88 @@ const RankingScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style = {styles.bannerContainer}>
+      <View style={styles.bannerContainer}>
         <Image
-          style={styles.trophyImage}
-          source={require('../assets/image/trophy.webp')}
+          style={styles.coralImage}
+          source={require('../assets/image/coral.png')}
         />
-        <Text style = {styles.bannerText}>오늘의 순위</Text>
+        <Text style={styles.bannerText}>오늘의 순위</Text>
         <Image
-          style={styles.trophyImage}
-          source={require('../assets/image/trophy.webp')}
+          style={styles.coralImage}
+          source={require('../assets/image/coral.png')}
         />
       </View>
-      
-      <View style = {styles.scrollViewWrapper}>
-      <ScrollView 
-        showsVerticalScrollIndicator = {false}
-        contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.rankingContainer}>
-          {users.length === 0 ? (
-            <Text style={styles.emptyMessage}>
-              오늘은 아직 아무도 플레이하지 않았어요!{'\n'}랭킹의 첫 주인공이
-              되어주세요!
-            </Text>
-          ) : (
-            users.slice(0, 10).map((user, index) => (
-              <View key={index} style={styles.rankingItem}>
-                {index < 3 ? (
-                  <View style = {styles.indexContainer}>
-                  <Image
-                    style={styles.medalImage}
-                    source={
-                      index === 0
-                        ? require('../assets/image/gold.png')
-                        : index === 1
-                        ? require('../assets/image/silver.png')
-                        : require('../assets/image/bronze.png')
-                    }
-                  />
+
+      <View style={styles.scrollViewWrapper}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.rankingContainer}>
+            {users.length === 0 ? (
+              <Text style={styles.emptyMessage}>
+                오늘은 아직 아무도 플레이하지 않았어요!{'\n'}랭킹의 첫 주인공이
+                되어주세요!
+              </Text>
+            ) : (
+              users.slice(0, 10).map((user, index) => (
+                <View key={index} style={styles.rankingItem}>
+                  {index < 3 ? (
+                    <View style={styles.indexContainer}>
+                      <Image
+                        style={styles.medalImage}
+                        source={
+                          index === 0
+                            ? require('../assets/image/gold.png')
+                            : index === 1
+                            ? require('../assets/image/silver.png')
+                            : require('../assets/image/bronze.png')
+                        }
+                      />
+                    </View>
+                  ) : (
+                    <View style={styles.indexContainer}>
+                      <Text style={styles.indexText}>{index + 1}</Text>
+                    </View>
+                  )}
+                  <View style={styles.nameTextContainer}>
+                    <Text style={styles.nameText}>{user.username}</Text>
                   </View>
-                ) : (
-                  <View style = {styles.indexContainer}>
-                  <Text style={styles.indexText}>{index + 1}</Text>
-                  </View>
-                )}
-                <View style = {styles.nameTextContainer}>
-                <Text style={styles.nameText}>{user.username}</Text>
+                  <Text style={styles.scoreText}>{user.score}</Text>
                 </View>
-                <Text style={styles.scoreText}>{user.score}</Text>
-              </View>
-            ))
-          )}
-        </View>
-        
-      </ScrollView>
-
+              ))
+            )}
+          </View>
+        </ScrollView>
       </View>
 
-      
       {fromScoreScreen ? (
-          <View style={styles.inputContainer}>
-            <Text style={styles.scoreTextInput}>Score: {score}</Text>
-            
-            
-            <View style={styles.buttonContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.scoreTextInput}>Score: {score}</Text>
+
+          <View style={styles.buttonContainer}>
             <TextInput
               style={styles.input}
               placeholder="기록하시겠어요? 이름을 남겨주세요!"
               value={name}
               onChangeText={setName}
             />
-              <TouchableOpacity style={styles.button} onPress={handleAddScore}>
-                <Text style={styles.buttonText}>추가</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={handleCancel}>
-                <Text style={styles.buttonText}>취소</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.mainButtonContainer}>
-            <TouchableOpacity
-              style={styles.mainButton}
-              onPress={() => navigation.navigate('Main')}>
-              <Text style={styles.mainButtonText}>메인으로 돌아가기</Text>
+            <TouchableOpacity style={styles.button} onPress={handleAddScore}>
+              <Text style={styles.buttonText}>추가</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleCancel}>
+              <Text style={styles.buttonText}>취소</Text>
             </TouchableOpacity>
           </View>
-        )}
+        </View>
+      ) : (
+        <View style={styles.mainButtonContainer}>
+          <TouchableOpacity
+            style={styles.mainButton}
+            onPress={() => navigation.navigate('Main')}>
+            <Text style={styles.mainButtonText}>메인으로 돌아가기</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -220,10 +216,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#A0EEFF',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'flex-end',
   },
   bannerContainer: {
-    width: width*0.8,
+    width: width * 0.8,
     height: 60,
     backgroundColor: '#FFFDF1',
     flexDirection: 'row',
@@ -232,7 +228,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 30,
     position: 'absolute',
-    top: 60
+    top: 60,
   },
   bannerText: {
     fontSize: 40,
@@ -240,19 +236,19 @@ const styles = StyleSheet.create({
     color: 'black',
     marginHorizontal: 10,
   },
-  trophyImage: {
+  coralImage: {
     width: 40,
     height: 40,
     alignSelf: 'center',
   },
   scrollViewWrapper: {
-    height: height*0.5+10,
-    width: width*0.8, 
+    height: height * 0.5 + 10,
+    width: width * 0.8,
     backgroundColor: '#FFFDF1',
     borderRadius: 35,
     marginBottom: 50,
     position: 'absolute',
-    top: 140
+    top: 140,
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -271,38 +267,38 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   indexContainer: {
-    height: width*0.12,
-    width: width*0.12,
+    height: width * 0.12,
+    width: width * 0.12,
     marginLeft: -20,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   medalImage: {
-    height: width*0.15 ,
-    width: width*0.15,
+    height: width * 0.15,
+    width: width * 0.15,
     marginLeft: -7,
-     // 메달 이미지와 유저 이름 간격 추가
+    // 메달 이미지와 유저 이름 간격 추가
   },
   indexText: {
     fontSize: 25,
     fontFamily: 'Dongle-Bold',
     marginRight: 10, // 인덱스와 유저 이름 간격
-    color: 'black'
+    color: 'black',
   },
   nameTextContainer: {
-    width: width*0.35,
+    width: width * 0.35,
     marginLeft: 10,
   },
   nameText: {
     fontSize: 25,
     fontFamily: 'Dongle-Bold',
-    color: 'black'
+    color: 'black',
   },
   scoreText: {
     fontSize: 25,
     fontFamily: 'Dongle-Bold',
     marginLeft: 20, // 유저 이름과 점수 간격 추가
-    color: 'black'
+    color: 'black',
   },
 
   emptyMessage: {
@@ -316,9 +312,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'red',
     position: 'absolute',
-    top: height*0.75,
+    top: height * 0.75,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   inputContainer: {
     alignItems: 'center',
@@ -328,7 +324,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: '#ccc',
     padding: 10,
-    width: width*0.5,
+    width: width * 0.5,
     backgroundColor: '#fff',
     borderRadius: 25,
   },
@@ -356,8 +352,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Dongle-Bold',
   },
   mainButtonContainer: {
-    marginTop: 20,
+    position: 'absolute', // 절대 위치로 설정
+    bottom: 20, // 하단에서 20 포인트 떨어짐
     alignItems: 'center',
+    width: '100%', // 버튼이 중앙에 오도록
   },
   mainButton: {
     backgroundColor: '#FFED8D',

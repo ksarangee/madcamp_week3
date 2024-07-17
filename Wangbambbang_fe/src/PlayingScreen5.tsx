@@ -9,7 +9,7 @@ import {
   Animated,
   Alert,
   BackHandler,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
@@ -35,8 +35,7 @@ type ScriptType = {
   level: string;
 };
 
-const {width, height} = Dimensions.get('window')
-
+const {width, height} = Dimensions.get('window');
 
 const PlayingScreen5: React.FunctionComponent<Props> = ({
   navigation,
@@ -106,7 +105,7 @@ const PlayingScreen5: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:3000/users/evaluate-pronunciation',
+        'http://172.20.10.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -184,11 +183,11 @@ const PlayingScreen5: React.FunctionComponent<Props> = ({
           text: '확인',
           onPress: async () => {
             if (recording) {
-                await stopRecording();
+              await stopRecording();
             }
             setIsCancelled(true); // 녹음 취소 상태로 설정
             navigation.navigate('Main');
-        }
+          },
         },
       ],
       {cancelable: false},
@@ -197,17 +196,17 @@ const PlayingScreen5: React.FunctionComponent<Props> = ({
 
   useEffect(() => {
     const backAction = () => {
-        handleBackPress();
-        return true;
+      handleBackPress();
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove();
-}, [recording]);
+  }, [recording]);
 
   const animatedWidth = progress.interpolate({
     inputRange: [0, 1],
@@ -290,6 +289,7 @@ const PlayingScreen5: React.FunctionComponent<Props> = ({
           <Image
             style={styles.micImage}
             source={require('../assets/image/mic.png')}
+            resizeMode="contain"
           />
         </TouchableOpacity>
         <LottieView
@@ -316,17 +316,17 @@ const styles = StyleSheet.create({
   backIcon: {
     width: 30,
     height: 30,
-    marginLeft:  -170
+    marginLeft: -170,
   },
   checkContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 50
+    height: 50,
   },
   checkIcon: {
     width: 25,
-    height: 25
+    height: 25,
   },
   checkCircle: {
     width: 35,
@@ -339,9 +339,9 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   currentQuestionIndicator: {
-    width: 35/2,
-    height: 35/2,
-    borderRadius: 35/4,
+    width: 35 / 2,
+    height: 35 / 2,
+    borderRadius: 35 / 4,
     backgroundColor: '#706DFF',
     position: 'absolute',
   },
@@ -349,15 +349,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 10,
     justifyContent: 'center',
-    height: height*0.08,
-    width: width*0.8,
+    height: height * 0.08,
+    width: width * 0.8,
   },
   clockImage: {
-    width: 35,
-    height: 35,
+    width: 45,
+    height: 60,
     position: 'absolute',
     left: 5,
-    top: 5,
+    top: -10,
   },
   barBack: {
     position: 'absolute',
@@ -376,8 +376,8 @@ const styles = StyleSheet.create({
     top: 10,
   },
   textContainer: {
-    width: width*0.8,
-    height: height*0.35,
+    width: width * 0.8,
+    height: height * 0.35,
     borderRadius: 30,
     backgroundColor: '#FFFDF1',
     alignItems: 'center',
@@ -398,17 +398,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 40,
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   micButton: {
     height: 100,
     width: 100,
     borderRadius: 50,
     backgroundColor: '#FFFDF1',
+    overflow: 'hidden',
   },
   micImage: {
-    width: 100,
-    height: 100,
+    width: '100%',
+    height: '100%',
   },
 });
 export default PlayingScreen5;

@@ -35,7 +35,7 @@ type ScriptType = {
   level: string;
 };
 
-const {width, height} = Dimensions.get('window')
+const {width, height} = Dimensions.get('window');
 
 const getRandomElements = <T,>(array: T[], count: number): T[] => {
   const shuffled = array.sort(() => 0.5 - Math.random());
@@ -59,7 +59,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 
   const getScript = async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:3000/scripts');
+      const response = await axios.get('http://172.20.10.2:3000/scripts');
       const filteredScripts = response.data.map((script: any) => ({
         content: script.content,
         level: script.level,
@@ -136,7 +136,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:3000/users/evaluate-pronunciation',
+        'http://172.20.10.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -305,6 +305,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
           <Image
             style={styles.micImage}
             source={require('../assets/image/mic.png')}
+            resizeMode="contain"
           />
         </TouchableOpacity>
         <LottieView
@@ -331,13 +332,13 @@ const styles = StyleSheet.create({
   backIcon: {
     width: 30,
     height: 30,
-    marginLeft:  -170
+    marginLeft: -170,
   },
   checkContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 50
+    height: 50,
   },
   checkCircle: {
     width: 35,
@@ -350,9 +351,9 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   currentQuestionIndicator: {
-    width: 35/2,
-    height: 35/2,
-    borderRadius: 35/4,
+    width: 35 / 2,
+    height: 35 / 2,
+    borderRadius: 35 / 4,
     backgroundColor: '#706DFF',
     position: 'absolute',
   },
@@ -360,15 +361,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 10,
     justifyContent: 'center',
-    height: height*0.08,
-    width: width*0.8,
+    height: height * 0.08,
+    width: width * 0.8,
   },
   clockImage: {
-    width: 35,
-    height: 35,
+    width: 45,
+    height: 60,
     position: 'absolute',
     left: 5,
-    top: 5,
+    top: -10,
   },
   barBack: {
     position: 'absolute',
@@ -387,8 +388,8 @@ const styles = StyleSheet.create({
     top: 10,
   },
   textContainer: {
-    width: width*0.8,
-    height: height*0.35,
+    width: width * 0.8,
+    height: height * 0.35,
     borderRadius: 30,
     backgroundColor: '#FFFDF1',
     alignItems: 'center',
@@ -409,17 +410,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 40,
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   micButton: {
     height: 100,
     width: 100,
     borderRadius: 50,
     backgroundColor: '#FFFDF1',
+    overflow: 'hidden',
   },
   micImage: {
-    width: 100,
-    height: 100,
+    width: '100%',
+    height: '100%',
   },
 });
 
