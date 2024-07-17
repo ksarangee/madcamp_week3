@@ -16,8 +16,7 @@ import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios from 'axios';
-import Mic from './micComponent';
-
+import Mic from './micComponent'
 
 import {RootStackParamList} from '../App';
 
@@ -58,9 +57,9 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
   const getDuration = (level: string) => {
     switch (level) {
       case '1':
-        return 1000;
-      default:
         return 1500;
+      default:
+        return 3000;
     }
   };
 
@@ -258,8 +257,7 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
           />
         </View>
         <View style={styles.checkCircle}>
-          <Image
-
+        <Image
             style={styles.circleImage}
             source={require('../assets/image/circle.png')}
           />
@@ -413,8 +411,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFDF1',
     overflow: 'hidden',
     alignItems: 'center',
-    justifyContent: 'center',
-
+    justifyContent: 'center'
   },
   micImage: {
     width: '100%',

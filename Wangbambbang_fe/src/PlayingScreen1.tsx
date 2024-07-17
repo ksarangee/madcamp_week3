@@ -16,7 +16,7 @@ import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios from 'axios';
-// import Mic from './micComponent';
+import Mic from './micComponent';
 
 import {RootStackParamList} from '../App';
 
@@ -306,7 +306,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
           loop={true}
         />
         <View style={styles.micButton}>
-        
+          <Mic />
         </View>
         <LottieView
           style={{width: '30%', height: '100%'}}
