@@ -16,7 +16,8 @@ import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios from 'axios';
-// import Mic from './micComponent';
+import Mic from './micComponent';
+
 import {RootStackParamList} from '../App';
 
 type PlayingScreenNavigationProp = StackNavigationProp<
@@ -59,7 +60,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 
   const getScript = async () => {
     try {
-      const response = await axios.get('http://172.20.10.2:3000/scripts');
+      const response = await axios.get('http://143.248.219.68:3000/scripts');
       const filteredScripts = response.data.map((script: any) => ({
         content: script.content,
         level: script.level,
@@ -136,7 +137,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://172.20.10.2:3000/users/evaluate-pronunciation',
+        'http://143.248.219.68:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -304,7 +305,9 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
           autoPlay
           loop={true}
         />
-        <View style={styles.micButton}></View>
+        <View style={styles.micButton}>
+          <Mic />
+        </View>
         <LottieView
           style={{width: '30%', height: '100%'}}
           source={require('../assets/lottie/soundwave.json')}
@@ -324,12 +327,14 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
+    width: width,
     justifyContent: 'center',
   },
   backIcon: {
     width: 30,
     height: 30,
-    marginLeft: -170,
+    marginLeft: 15,
+    marginTop: 10,
   },
   checkContainer: {
     flexDirection: 'row',

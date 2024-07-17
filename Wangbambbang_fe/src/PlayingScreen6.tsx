@@ -17,6 +17,7 @@ import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios from 'axios';
 import Mic from './micComponent';
+
 import {RootStackParamList} from '../App';
 
 type PlayingScreenNavigationProp = StackNavigationProp<
@@ -56,9 +57,9 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
   const getDuration = (level: string) => {
     switch (level) {
       case '1':
-        return 1000;
-      default:
         return 1500;
+      default:
+        return 3000;
     }
   };
 
@@ -105,7 +106,7 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://172.20.10.2:3000/users/evaluate-pronunciation',
+        'http://143.248.219.68:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -310,12 +311,14 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
+    width: width,
     justifyContent: 'center',
   },
   backIcon: {
     width: 30,
     height: 30,
-    marginLeft: -170,
+    marginLeft: 15,
+    marginTop: 10,
   },
   checkContainer: {
     flexDirection: 'row',

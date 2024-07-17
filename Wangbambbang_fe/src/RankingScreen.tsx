@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
@@ -26,7 +25,7 @@ interface User {
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://172.20.10.2:3000',
+  baseURL: 'http://143.248.219.68:3000',
   timeout: 30000,
 });
 
@@ -46,7 +45,7 @@ const Join = () => {
   const score = route.params?.score || 0;
   const fromScoreScreen = route.params?.fromScoreScreen || false;
   const [users, setUsers] = useState<User[]>([]);
-  const [newUser, setNewUser] = useState<User | null>(null); // 새로 추가된 유저 상태
+  // const [newUser, setNewUser] = useState<User | null>(null); // 새로 추가된 유저 상태
 
   const checkAndResetRanking = async () => {
     try {
@@ -111,8 +110,7 @@ const Join = () => {
       const newUser = {username: name, score};
       await api.post('/users/save-score', newUser);
       setName('');
-      setNewUser(newUser); // 새로 추가된 유저 상태 설정
-      navigation.navigate('Ranking', {fromScoreScreen: false});
+      navigation.setParams({fromScoreScreen: false}); // Update this line
       fetchUsers(); // 새 유저 추가 후 유저 리스트 다시 가져오기
     } catch (error: any) {
       console.error('Error saving score:', error);
@@ -154,16 +152,7 @@ const Join = () => {
                 </Text>
               ) : (
                 users.slice(0, 10).map((user, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.rankingItem,
-                      newUser &&
-                      user.username === newUser.username &&
-                      user.score === newUser.score
-                        ? styles.newUserHighlight
-                        : null,
-                    ]}>
+                  <View key={index} style={[styles.rankingItem]}>
                     {index < 3 ? (
                       <View style={styles.indexContainer}>
                         <Image
@@ -385,9 +374,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#706DFF',
     fontFamily: 'Dongle-Bold',
-  },
-  newUserHighlight: {
-    backgroundColor: 'black', // 하이라이트 색상 (예: 연한 노란색)
   },
 });
 
