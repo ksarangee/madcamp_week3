@@ -25,7 +25,7 @@ interface User {
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://172.20.10.6:3000',
+  baseURL: 'http://143.248.219.68:3000',
   timeout: 30000,
 });
 
@@ -45,7 +45,7 @@ const Join = () => {
   const score = route.params?.score || 0;
   const fromScoreScreen = route.params?.fromScoreScreen || false;
   const [users, setUsers] = useState<User[]>([]);
-  const [newUser, setNewUser] = useState<User | null>(null); // 새로 추가된 유저 상태
+  // const [newUser, setNewUser] = useState<User | null>(null); // 새로 추가된 유저 상태
 
   const checkAndResetRanking = async () => {
     try {
@@ -110,8 +110,7 @@ const Join = () => {
       const newUser = {username: name, score};
       await api.post('/users/save-score', newUser);
       setName('');
-      setNewUser(newUser); // 새로 추가된 유저 상태 설정
-      navigation.navigate('Ranking', {fromScoreScreen: false});
+      navigation.setParams({ fromScoreScreen: false }); // Update this line
       fetchUsers(); // 새 유저 추가 후 유저 리스트 다시 가져오기
     } catch (error: any) {
       console.error('Error saving score:', error);
@@ -157,7 +156,7 @@ const Join = () => {
                     key={index}
                     style={[
                       styles.rankingItem,
-                      newUser && user.username === newUser.username && user.score === newUser.score ? styles.newUserHighlight : null,
+                    
                     ]}>
                     {index < 3 ? (
                       <View style={styles.indexContainer}>
@@ -233,103 +232,103 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-      bannerContainer: {
-        width: width * 0.8,
-        height: 60,
-        backgroundColor: '#FFFDF1',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
-        borderRadius: 30,
-        marginVertical: 30,
-      },
-      bannerText: {
-        fontSize: 40,
-        fontFamily: 'Dongle-Bold',
-        color: 'black',
-        marginHorizontal: 10,
-      },
-      coralImage: {
-        width: 40,
-        height: 40,
-        alignSelf: 'center',
-      },
-      scrollViewWrapper: {
-        height: height * 0.5 + 10,
-        width: width * 0.8,
-        backgroundColor: '#FFFDF1',
-        borderRadius: 35,
-      },
-      scrollViewContent: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      rankingContainer: {
-        borderRadius: 10,
-        width: '90%',
-        paddingHorizontal: 25,
-        paddingVertical: 15,
-      },
-      rankingItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 5,
-      },
-      indexContainer: {
-        height: width * 0.12,
-        width: width * 0.12,
-        marginLeft: -20,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      medalImage: {
-        height: width * 0.15,
-        width: width * 0.15,
-        marginLeft: -7,
-        // 메달 이미지와 유저 이름 간격 추가
-      },
-      indexText: {
-        fontSize: 25,
-        fontFamily: 'Dongle-Bold',
-        marginRight: 10, // 인덱스와 유저 이름 간격
-        color: 'black',
-      },
-      nameTextContainer: {
-        width: width * 0.35,
-        marginLeft: 10,
-      },
-      nameText: {
-        fontSize: 25,
-        fontFamily: 'Dongle-Bold',
-        color: 'black',
-      },
-      scoreText: {
-        fontSize: 25,
-        fontFamily: 'Dongle-Bold',
-        marginLeft: 20, // 유저 이름과 점수 간격 추가
-        color: 'black',
-      },
-      emptyMessage: {
-        fontSize: 20,
-        textAlign: 'center',
-        color: '#D3D3D3',
-        marginVertical: 30,
-        fontFamily: 'Dongle-Regular',
-      },
-      totalContainer: {
-        flexDirection: 'row',
-        backgroundColor: 'red',
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      inputContainer: {
-        alignItems: 'center',
-        width: width,
-        justifyContent: 'center'
-      },
-      input: {
+  bannerContainer: {
+    width: width * 0.8,
+    height: 60,
+    backgroundColor: '#FFFDF1',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderRadius: 30,
+    marginVertical: 30,
+  },
+  bannerText: {
+    fontSize: 40,
+    fontFamily: 'Dongle-Bold',
+    color: 'black',
+    marginHorizontal: 10,
+  },
+  coralImage: {
+    width: 40,
+    height: 40,
+    alignSelf: 'center',
+  },
+  scrollViewWrapper: {
+    height: height * 0.5 + 10,
+    width: width * 0.8,
+    backgroundColor: '#FFFDF1',
+    borderRadius: 35,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rankingContainer: {
+    borderRadius: 10,
+    width: '90%',
+    paddingHorizontal: 25,
+    paddingVertical: 15,
+  },
+  rankingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  indexContainer: {
+    height: width * 0.12,
+    width: width * 0.12,
+    marginLeft: -20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  medalImage: {
+    height: width * 0.15,
+    width: width * 0.15,
+    marginLeft: -7,
+    // 메달 이미지와 유저 이름 간격 추가
+  },
+  indexText: {
+    fontSize: 25,
+    fontFamily: 'Dongle-Bold',
+    marginRight: 10, // 인덱스와 유저 이름 간격
+    color: 'black',
+  },
+  nameTextContainer: {
+    width: width * 0.35,
+    marginLeft: 10,
+  },
+  nameText: {
+    fontSize: 25,
+    fontFamily: 'Dongle-Bold',
+    color: 'black',
+  },
+  scoreText: {
+    fontSize: 25,
+    fontFamily: 'Dongle-Bold',
+    marginLeft: 20, // 유저 이름과 점수 간격 추가
+    color: 'black',
+  },
+  emptyMessage: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#D3D3D3',
+    marginVertical: 30,
+    fontFamily: 'Dongle-Regular',
+  },
+  totalContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    alignItems: 'center',
+    width: width,
+    justifyContent: 'center'
+  },
+  input: {
     borderWidth: 0,
     borderColor: '#ccc',
     padding: 10,
@@ -337,54 +336,51 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 25,
   },
-      textinput: {
-        borderWidth: 0,
-        borderColor: '#ccc',
-        padding: 10,
-        width: width * 0.5,
-        backgroundColor: '#fff',
-        borderRadius: 25,
-      },
-      scoreTextInput: {
-        fontSize: 25,
-        marginVertical: 10,
-        fontFamily: 'Dongle-Bold',
-      },
-      buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-      },
-      button: {
-        height: 50,
-        backgroundColor: '#FFED8D',
-        padding: 10,
-        borderRadius: 25,
-        marginHorizontal: 5,
-      },
-      buttonText: {
-        fontSize: 30,
-        color: '#706DFF',
-        fontFamily: 'Dongle-Bold',
-      },
-      mainButtonContainer: {
-        alignItems: 'center',
-        width: '100%', // 버튼이 중앙에 오도록
-        marginTop: 30,
-      },
-      mainButton: {
-        backgroundColor: '#FFED8D',
-        padding: 10,
-        borderRadius: 5,
-        
-      },
-      mainButtonText: {
-        fontSize: 30,
-        color: '#706DFF',
-        fontFamily: 'Dongle-Bold',
-      },
-      newUserHighlight: {
-        backgroundColor: 'black', // 하이라이트 색상 (예: 연한 노란색)
-      },
+  textinput: {
+    borderWidth: 0,
+    borderColor: '#ccc',
+    padding: 10,
+    width: width * 0.5,
+    backgroundColor: '#fff',
+    borderRadius: 25,
+  },
+  scoreTextInput: {
+    fontSize: 25,
+    marginVertical: 10,
+    fontFamily: 'Dongle-Bold',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  button: {
+    height: 50,
+    backgroundColor: '#FFED8D',
+    padding: 10,
+    borderRadius: 25,
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    fontSize: 30,
+    color: '#706DFF',
+    fontFamily: 'Dongle-Bold',
+  },
+  mainButtonContainer: {
+    alignItems: 'center',
+    width: '100%', // 버튼이 중앙에 오도록
+    marginTop: 30,
+  },
+  mainButton: {
+    backgroundColor: '#FFED8D',
+    padding: 10,
+    borderRadius: 5,
+    
+  },
+  mainButtonText: {
+    fontSize: 30,
+    color: '#706DFF',
+    fontFamily: 'Dongle-Bold',
+  },
 });
 
 export default Join;
