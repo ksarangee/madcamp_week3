@@ -11,7 +11,7 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -110,7 +110,7 @@ const Join = () => {
       const newUser = {username: name, score};
       await api.post('/users/save-score', newUser);
       setName('');
-      navigation.setParams({ fromScoreScreen: false }); // Update this line
+      navigation.setParams({fromScoreScreen: false}); // Update this line
       fetchUsers(); // 새 유저 추가 후 유저 리스트 다시 가져오기
     } catch (error: any) {
       console.error('Error saving score:', error);
@@ -125,7 +125,7 @@ const Join = () => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAwareScrollView 
+      <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewStyle}>
         <View style={styles.bannerContainer}>
@@ -147,17 +147,12 @@ const Join = () => {
             <View style={styles.rankingContainer}>
               {users.length === 0 ? (
                 <Text style={styles.emptyMessage}>
-                  오늘은 아직 아무도 플레이하지 않았어요!{'\n'}랭킹의 첫 주인공이
-                  되어주세요!
+                  오늘은 아직 아무도 플레이하지 않았어요!{'\n'}랭킹의 첫
+                  주인공이 되어주세요!
                 </Text>
               ) : (
                 users.slice(0, 10).map((user, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.rankingItem,
-                    
-                    ]}>
+                  <View key={index} style={[styles.rankingItem]}>
                     {index < 3 ? (
                       <View style={styles.indexContainer}>
                         <Image
@@ -326,7 +321,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     alignItems: 'center',
     width: width,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   input: {
     borderWidth: 0,
@@ -374,7 +369,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFED8D',
     padding: 10,
     borderRadius: 5,
-    
   },
   mainButtonText: {
     fontSize: 30,

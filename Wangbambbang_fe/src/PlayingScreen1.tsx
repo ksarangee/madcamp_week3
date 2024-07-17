@@ -270,7 +270,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 
       <View style={styles.checkContainer}>
         <View style={styles.checkCircle}>
-        <Image
+          <Image
             style={styles.circleImage}
             source={require('../assets/image/circle.png')}
           />
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   header: {
     height: 50,
     width: width,
-    justifyContent: 'center'    
+    justifyContent: 'center',
   },
   backIcon: {
     width: 30,
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFDF1',
     overflow: 'hidden',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   micImage: {
     width: '100%',
