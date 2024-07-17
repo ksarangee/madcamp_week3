@@ -60,7 +60,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 
   const getScript = async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:3000/scripts');
+      const response = await axios.get('http://172.20.10.2:3000/scripts');
       const filteredScripts = response.data.map((script: any) => ({
         content: script.content,
         level: script.level,
@@ -137,7 +137,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:3000/users/evaluate-pronunciation',
+        'http://172.20.10.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
