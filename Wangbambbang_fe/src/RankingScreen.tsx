@@ -26,7 +26,7 @@ interface User {
 
 // axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://172.20.10.6:3000',
+  baseURL: 'http://172.20.10.2:3000',
   timeout: 30000,
 });
 
