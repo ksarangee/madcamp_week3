@@ -311,12 +311,14 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    justifyContent: 'center',
+    width: width,
+    justifyContent: 'center'    
   },
   backIcon: {
     width: 30,
     height: 30,
-    marginLeft: -170,
+    marginLeft: 15,
+    marginTop: 10,
   },
   checkContainer: {
     flexDirection: 'row',
