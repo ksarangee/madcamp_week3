@@ -173,6 +173,7 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
           <Text style={styles.buttonText}>저장하기</Text>
         </TouchableOpacity>
       </View>
+      
     </View>
   );
 };

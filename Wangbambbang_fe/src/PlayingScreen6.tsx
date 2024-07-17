@@ -17,7 +17,6 @@ import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios from 'axios';
 import Mic from './micComponent';
-
 import {RootStackParamList} from '../App';
 
 type PlayingScreenNavigationProp = StackNavigationProp<
@@ -106,7 +105,7 @@ const PlayingScreen6: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://172.20.10.2:3000/users/evaluate-pronunciation',
+        'http://172.20.10.6:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
