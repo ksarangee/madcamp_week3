@@ -16,6 +16,7 @@ import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios, {isCancel} from 'axios';
+import Mic from './micComponent';
 
 import {RootStackParamList} from '../App';
 
@@ -56,9 +57,9 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
   const getDuration = (level: string) => {
     switch (level) {
       case '1':
-        return 1500;
+        return 1000;
       default:
-        return 3000;
+        return 1500;
     }
   };
 
@@ -105,7 +106,7 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://172.20.10.2:3000/users/evaluate-pronunciation',
+        'http://10.0.2.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -247,7 +248,10 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
           />
         </View>
         <View style={styles.checkCircle}>
-          <View style={styles.currentQuestionIndicator} />
+          <Image
+            style={styles.circleImage}
+            source={require('../assets/image/circle.png')}
+          />
         </View>
         {[...Array(2)].map((_, index) => (
           <View key={index} style={styles.checkCircle} />
@@ -279,13 +283,9 @@ const PlayingScreen4: React.FunctionComponent<Props> = ({
           autoPlay
           loop={true}
         />
-        <TouchableOpacity style={styles.micButton}>
-          <Image
-            style={styles.micImage}
-            source={require('../assets/image/mic.png')}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+        <View style={styles.micButton}>
+          <Mic />
+        </View>
         <LottieView
           style={{width: '30%', height: '100%'}}
           source={require('../assets/lottie/soundwave.json')}
@@ -332,12 +332,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
-  currentQuestionIndicator: {
-    width: 35 / 2,
-    height: 35 / 2,
-    borderRadius: 35 / 4,
-    backgroundColor: '#706DFF',
-    position: 'absolute',
+  circleImage: {
+    width: 27,
+    height: 27,
   },
   timeBarContainer: {
     flexDirection: 'row',
@@ -400,6 +397,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: '#FFFDF1',
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   micImage: {
     width: '100%',

@@ -85,12 +85,6 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
-      <LottieView
-        style={{width: '100%', height: '100%', position: 'absolute'}}
-        source={require('../assets/lottie/confetti.json')}
-        autoPlay
-        loop={false}
-      />
       <View style={styles.scoreContainer}>
         <Text style={styles.scoreText}>{averageScore}</Text>
         <Text style={styles.comment}>{getComment(averageScore)}</Text>
@@ -154,6 +148,13 @@ const ScoreScreen: React.FunctionComponent<Props> = ({navigation, route}) => {
           <Text style={styles.roundScoreText}>{transformedScores[5]}</Text>
         </View>
       </View>
+
+      <LottieView
+        style={{width: '100%', height: '100%', position: 'absolute'}}
+        source={require('../assets/lottie/confetti.json')}
+        autoPlay
+        loop={false}
+      />
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity

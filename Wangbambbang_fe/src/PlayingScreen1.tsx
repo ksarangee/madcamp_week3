@@ -16,6 +16,7 @@ import {RouteProp} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {AudioUtils, AudioRecorder} from 'react-native-audio';
 import axios from 'axios';
+import Mic from './micComponent';
 
 import {RootStackParamList} from '../App';
 
@@ -59,7 +60,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 
   const getScript = async () => {
     try {
-      const response = await axios.get('http://172.20.10.2:3000/scripts');
+      const response = await axios.get('http://10.0.2.2:3000/scripts');
       const filteredScripts = response.data.map((script: any) => ({
         content: script.content,
         level: script.level,
@@ -81,9 +82,9 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const getDuration = (level: string) => {
     switch (level) {
       case '1':
-        return 1500;
+        return 1000;
       default:
-        return 3000;
+        return 1500;
     }
   };
 
@@ -136,7 +137,7 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
   const sendPost = async () => {
     try {
       const response = await axios.post(
-        'http://172.20.10.2:3000/users/evaluate-pronunciation',
+        'http://10.0.2.2:3000/users/evaluate-pronunciation',
         {
           audioData: base64String,
           script: scripts[0].content,
@@ -269,7 +270,10 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
 
       <View style={styles.checkContainer}>
         <View style={styles.checkCircle}>
-          <View style={styles.currentQuestionIndicator} />
+          <Image
+            style={styles.circleImage}
+            source={require('../assets/image/circle.png')}
+          />
         </View>
         {[...Array(5)].map((_, index) => (
           <View key={index} style={styles.checkCircle} />
@@ -301,13 +305,9 @@ const PlayingScreen1: React.FunctionComponent<Props> = ({
           autoPlay
           loop={true}
         />
-        <TouchableOpacity style={styles.micButton}>
-          <Image
-            style={styles.micImage}
-            source={require('../assets/image/mic.png')}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+        <View style={styles.micButton}>
+          <Mic />
+        </View>
         <LottieView
           style={{width: '30%', height: '100%'}}
           source={require('../assets/lottie/soundwave.json')}
@@ -349,6 +349,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+  },
+  circleImage: {
+    width: 27,
+    height: 27,
   },
   currentQuestionIndicator: {
     width: 35 / 2,
@@ -418,6 +422,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: '#FFFDF1',
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   micImage: {
     width: '100%',
